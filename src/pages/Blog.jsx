@@ -10,7 +10,7 @@ export default function Blogs() {
   useEffect(() => {
 
 
-    axios.get(`${URI}/api/blogs`,{ withCredentials: true })
+    axios.get(`${URI}/api/blogs/allBlogs`,{ withCredentials: true })
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);
