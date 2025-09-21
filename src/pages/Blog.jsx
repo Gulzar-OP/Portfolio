@@ -11,6 +11,7 @@ export default function Blogs() {
 
 
     axios.get(`${URI}/api/blogs/allBlogs`,{ withCredentials: true })
+    // axios.get('http://localhost:3000/api/blogs/allBlogs')
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);
