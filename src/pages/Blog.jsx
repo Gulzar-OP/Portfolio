@@ -6,7 +6,7 @@ export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/blogs/allBlogs')
+    axios.get('portfolio2-jade-tau.vercel.app/api/blogs/allBlogs')
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);
