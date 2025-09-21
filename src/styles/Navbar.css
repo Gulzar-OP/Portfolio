@@ -1,0 +1,88 @@
+/* General Navbar styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c3e50;
+  padding: 1rem 8%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo */
+.navbar-logo h1 {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+/* Nav links desktop */
+.navbar-links ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links ul li a {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-links ul li a:hover,
+.navbar-links ul li a.active {
+  color: #3498db;
+}
+
+/* Hamburger Icon hidden by default on desktop */
+.menu-icon {
+  display: none;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Checkbox hidden */
+.menu-toggle {
+  display: none;
+}
+
+/* Responsive part */
+@media (max-width: 768px) {
+  /* Show hamburger icon */
+  .menu-icon {
+    display: block;
+  }
+
+  /* Hide nav links initially */
+  .navbar-links {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: #2c3e50;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  .navbar-links ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem 0;
+  }
+
+  /* When checkbox checked — show menu */
+  .menu-toggle:checked ~ .navbar-links {
+    height: 260px; /* enough space for links */
+  }
+}
