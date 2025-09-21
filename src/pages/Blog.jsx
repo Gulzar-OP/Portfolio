@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Blog.css';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
+
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
