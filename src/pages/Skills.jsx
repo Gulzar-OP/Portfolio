@@ -4,7 +4,7 @@ import '../styles/Skills.css';
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
-  const URI = process.env.URL1 || 'http://localhost:3000';
+  const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 
   useEffect(() => {
     axios.get(`${URI}/api/skills`)

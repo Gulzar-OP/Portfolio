@@ -4,7 +4,7 @@ import '../styles/Blog.css';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const URI = process.env.URL1 || 'http://localhost:3000';
+const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
