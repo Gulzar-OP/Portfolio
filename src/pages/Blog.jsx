@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Blog.css';
+import dotenv from 'dotenv';
+dotenv.config();
 
+const URL = process.env.URL || 'http://localhost:3000';
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    axios.get('portfolio2-jade-tau.vercel.app/api/blogs/allBlogs')
+
+
+    axios.get(`${URL}/api/blogs`)
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);
