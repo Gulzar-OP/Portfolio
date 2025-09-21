@@ -7,7 +7,7 @@ export default function Skills() {
   const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 
   useEffect(() => {
-    axios.get(`${URI}/api/skills`)
+    axios.get(`${URI}/api/skills`,{ withCredentials: true })
       .then(res => {
         setSkills(res.data);
       })
