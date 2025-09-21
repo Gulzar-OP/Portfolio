@@ -4,9 +4,10 @@ import '../styles/Skills.css';
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
+  const URI = process.env.URL1 || 'http://localhost:3000';
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/skills/allSkills')
+    axios.get(`${URI}/api/skills`)
       .then(res => {
         setSkills(res.data);
       })

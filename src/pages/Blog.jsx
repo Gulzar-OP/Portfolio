@@ -4,14 +4,14 @@ import '../styles/Blog.css';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const URL = process.env.URL || 'http://localhost:3000';
+const URI = process.env.URL1 || 'http://localhost:3000';
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
 
 
-    axios.get(`${URL}/api/blogs`)
+    axios.get(`${URI}/api/blogs`)
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);

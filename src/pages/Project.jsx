@@ -5,8 +5,10 @@ import '../styles/Projects.css';
 export default function Projects() {
   const [projects, setProjects] = useState([]);
 
+  const URI = process.env.URL1 || 'http://localhost:3000';
+
   useEffect(() => {
-  axios.get('http://localhost:3000/api/projects/allProjects')
+  axios.get(`${URI}/api/projects`)
     .then(res => {
       console.log(res.data);  // check what data is coming
       setProjects(res.data);   // or res.data.projects depending on backend
