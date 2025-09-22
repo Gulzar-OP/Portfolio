@@ -22,10 +22,16 @@ export default function Contact() {
     setSuccess('');
     setError('');
 
+    const URI = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     try {
-      const res = await axios.post('http://localhost:3000/api/send/mail', form, {
-        headers: { "Content-Type": "application/json" }
-      });
+      const res = await axios.post(
+        `${URI}/api/send/mail`,
+        form,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true // agar backend session/cookie expects karta hai toh
+        }
+      );
       if (res.data.success) {
         setSuccess(res.data.message);
         setForm({ name: '', email: '', phone: '', message: '' });
@@ -42,24 +48,25 @@ export default function Contact() {
     <div className="contact-page">
       <h1>Hire Me / Contact</h1>
       <p>If you like my work, drop me a message below!</p>
-
       <form className="contact-form" onSubmit={handleSubmit}>
-        <label>Name:
+        <label>
+          Name:
           <input type="text" name="name" value={form.name} onChange={handleChange} required />
         </label>
-        <label>Email:
+        <label>
+          Email:
           <input type="email" name="email" value={form.email} onChange={handleChange} required />
         </label>
-        <label>Phone:
+        <label>
+          Phone:
           <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
         </label>
-        <label>Message:
+        <label>
+          Message:
           <textarea name="message" value={form.message} onChange={handleChange} required />
         </label>
-
         <button type="submit">Send Message</button>
       </form>
-
       {success && <p className="success-message">{success}</p>}
       {error && <p className="error-message">{error}</p>}
     </div>
