@@ -14,7 +14,7 @@ export default function Contact() {
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async e => {
@@ -28,19 +28,19 @@ export default function Contact() {
         `${URI}/api/send/mail`,
         form,
         {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true // agar backend session/cookie expects karta hai toh
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
         }
       );
       if (res.data.success) {
         setSuccess(res.data.message);
         setForm({ name: '', email: '', phone: '', message: '' });
       } else {
-        setError(res.data.message || "Something went wrong");
+        setError(res.data.message || 'Something went wrong');
       }
     } catch (err) {
       console.error(err);
-      setError("Server Error: Could not send message");
+      setError('Server Error: Could not send message');
     }
   };
 
