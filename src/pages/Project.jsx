@@ -8,7 +8,7 @@ export default function Projects() {
   const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 
   useEffect(() => {
-  axios.get(`${URI}/api/projects`,{ withCredentials: true })
+  axios.get(`${URI}/api/projects/all/Projects`,{ withCredentials: true })
   // axios.get('http://localhost:3000/api/projects/allProjects')
     .then(res => {
       console.log(res.data);  // check what data is coming
