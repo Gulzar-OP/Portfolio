@@ -4,11 +4,11 @@ import '../styles/Skills.css';
 
 export default function Skills() {
   const [skills, setSkills] = useState([]);
-  // const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
+  const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 
   useEffect(() => {
-    // axios.get(`${URI}/api/skills`,{ withCredentials: true })
-    axios.get('http://localhost:3000/api/skills/allSkills')
+    axios.get(`${URI}/api/skills/allSkills`,{ withCredentials: true })
+    // axios.get('http://localhost:3000/api/skills/allSkills')
       .then(res => {
         setSkills(res.data);
       })
