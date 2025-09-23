@@ -1,0 +1,88 @@
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f9;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #222;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: #333;
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: #444;
+}
+
+.sidebar li.active {
+  background: #007bff;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.card form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.card input,
+.card textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.card button {
+  padding: 12px;
+  background: #007bff;
+  color: white;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background: #0056b3;
+}

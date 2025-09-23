@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Blog.css';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
-const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
+const URI = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
@@ -10,8 +12,8 @@ export default function Blogs() {
   useEffect(() => {
 
 
-    axios.get(`${URI}/api/blogs/allBlogs`,{ withCredentials: true })
-    // axios.get('http://localhost:3000/api/blogs/allBlogs')
+    axios.get(`${URI}/api/blogs/allBlogs`, { withCredentials: true })
+      // axios.get('http://localhost:3000/api/blogs/allBlogs')
       .then(res => {
         console.log("Blogs data:", res.data); // check what comes from backend
         setBlogs(res.data);
@@ -24,17 +26,22 @@ export default function Blogs() {
   }
 
   return (
-    <div className="blogs-page">
-      <h1>My Blogs</h1>
-      <div className="blogs-container">
-        {blogs.map(blog => (
-          <div className="blog-card" key={blog._id}>
-            <h2>{blog.title}</h2>
-            <p>{blog.content}</p>
-            <p><strong>Author:</strong> {blog.author}</p>
-          </div>
-        ))}
+    <div>
+      <Navbar />
+
+      <div className="blogs-page">
+        <h1>My Blogs</h1>
+        <div className="blogs-container">
+          {blogs.map(blog => (
+            <div className="blog-card" key={blog._id}>
+              <h2>{blog.title}</h2>
+              <p>{blog.content}</p>
+              <p><strong>Author:</strong> {blog.author}</p>
+            </div>
+          ))}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

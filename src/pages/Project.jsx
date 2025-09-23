@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Projects.css';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -8,7 +10,7 @@ export default function Projects() {
   const URI = import.meta.env.VITE_API_URL|| 'http://localhost:3000';
 
   useEffect(() => {
-  axios.get(`${URI}/api/projects/all/Projects`,{ withCredentials: true })
+  axios.get(`${URI}/api/projects/allProjects`,{ withCredentials: true })
   // axios.get('http://localhost:3000/api/projects/allProjects')
     .then(res => {
       console.log(res.data);  // check what data is coming
@@ -19,6 +21,9 @@ export default function Projects() {
 
 
   return (
+    <div>
+      <Navbar />
+    
     <div className="projects-page">
       <h1>My Projects</h1>
       <div className="projects-container">
@@ -32,6 +37,8 @@ export default function Projects() {
           </div>
         ))}
       </div>
+    </div>
+    <Footer />
     </div>
   );
 }

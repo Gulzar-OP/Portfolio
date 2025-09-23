@@ -1,81 +1,83 @@
 /* Login.css */
-body {
+
+/* Body style */
+/* body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */
 
+/* Container box */
 .login-box {
     background-color: #fff;
     padding: 40px 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     width: 350px;
-    max-width: 90%;
     text-align: center;
+    transition: transform 0.3s ease;
 }
 
-.login-box h1 {
+.login-box:hover {
+    transform: translateY(-5px);
+}
+
+/* Heading */
+h1 {
     margin-bottom: 30px;
     color: #333;
     font-size: 28px;
-    font-weight: 600;
 }
 
+/* Input fields */
 .login-form input[type="email"],
 .login-form input[type="password"] {
     width: 100%;
     padding: 12px 15px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
+    margin: 12px 0;
     border-radius: 8px;
+    border: 1px solid #ccc;
     outline: none;
     font-size: 16px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 .login-form input[type="email"]:focus,
 .login-form input[type="password"]:focus {
-    border-color: #2575fc;
-    box-shadow: 0 0 8px rgba(37, 117, 252, 0.4);
+    border-color: #6a11cb;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.3);
 }
 
+/* Submit button */
 .login-form input[type="submit"] {
     width: 100%;
     padding: 12px 15px;
     margin-top: 20px;
     border: none;
     border-radius: 8px;
-    background: #2575fc;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 500;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 .login-form input[type="submit"]:hover {
-    background: #6a11cb;
+    background: linear-gradient(135deg, #2575fc, #6a11cb);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.login-box::before {
-    content: "";
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-    top: -50px;
-    right: -100px;
-    z-index: 0;
-}
-
-.login-form input {
-    position: relative;
-    z-index: 1;
+/* Responsive */
+@media screen and (max-width: 400px) {
+    .login-box {
+        width: 90%;
+        padding: 30px 20px;
+    }
 }

@@ -1,10 +1,13 @@
 import React from 'react'
 import '../styles/Home.css'
 import Skills from './Skills'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
 export default function Home() {
   return (
     <>
+    <Navbar />
 
       <div className='main-container'>
         <div className="heading">
@@ -30,6 +33,7 @@ export default function Home() {
         </div>
       </div>
       <Skills />
+      <Footer />
     </>
   )
 }

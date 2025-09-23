@@ -28,7 +28,7 @@ export default function Login() {
             console.log('Response:', res.data);
 
             alert('Login Successful!');
-            navigate('/dashboard'); // <- login ke baad dashboard par navigate
+            navigate('/admin'); // <- login ke baad dashboard par navigate
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
             alert(error.response?.data?.message || 'Something went wrong');
