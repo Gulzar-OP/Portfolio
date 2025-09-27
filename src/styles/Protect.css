@@ -32,12 +32,24 @@
   background: #333;
   transition: 0.3s;
 }
-
+ .sidebar li a{
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+  text-decoration: none;
+  color: white;
+  /* display: inline-block; */
+  height: 20px;
+  width: 100%;
+}
 .sidebar li:hover {
   background: #444;
 }
 
 .sidebar li.active {
+  background: #007bff;
+}
+.sidebar a.active {
   background: #007bff;
 }
 

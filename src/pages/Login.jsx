@@ -27,7 +27,7 @@ export default function Login() {
             );
             console.log('Response:', res.data);
 
-            alert('Login Successful!');
+            // alert('Login Successful!');
             navigate('/admin'); // <- login ke baad dashboard par navigate
         } catch (error) {
             console.error('Error:', error.response?.data || error.message);
@@ -36,7 +36,7 @@ export default function Login() {
     };
 
     return (
-        <div>
+        <div className='main-login'>
             <h1>Login Page</h1>
             <div className="login-box">
                 <form className='login-form' onSubmit={handleSubmit}>

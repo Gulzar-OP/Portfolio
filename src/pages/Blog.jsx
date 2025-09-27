@@ -36,11 +36,15 @@ export default function Blogs() {
             <div className="blog-card" key={blog._id}>
               <h2>{blog.title}</h2>
               <p>{blog.content}</p>
-              <p><strong>Author:</strong> {blog.author}</p>
+              <div className="author">
+                <img src="/profile.png" alt="Author" />
+                <span><strong>{blog.author}</strong></span>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
       <Footer />
     </div>
   );
