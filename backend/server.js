@@ -23,6 +23,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://portfolio-zeta-eosin-38.vercel.app",
       process.env.FRONTEND_API,
     ],
     credentials: true,
