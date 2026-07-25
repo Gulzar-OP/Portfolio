@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
-const URI = "http://localhost:2000/api/v1/projects";
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 const Field = ({ label, className = "", children }) => (
   <div className={className}>
@@ -89,7 +89,7 @@ export default function ProjectEdit() {
 
   const fetchProject = async () => {
     try {
-      const { data } = await axios.get(`${URI}/${projectId}`);
+      const { data } = await axios.get(`${API}/api/v1/projects/${projectId}`);
 
       setProject({
         ...data.project,

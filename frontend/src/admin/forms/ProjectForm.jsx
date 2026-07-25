@@ -1,6 +1,6 @@
 // File: components/ProjectForm.jsx
 import React, { useState } from "react";
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 const Field = ({ label, className = "", children }) => (
   <div className={className}>
     <label className="mb-2 block text-sm font-medium text-gray-300">{label}</label>
@@ -75,12 +75,7 @@ export default function ProjectForm({ setOpenModal }) {
         Array.from(imagesInput.files).forEach((file) => formData.append("images", file));
       }
 
-      // const res = await fetch("http://localhost:2000/api/v1/projects", {
-      //   method: "POST",
-      //   credentials: "include",
-      //   body: formData,
-      // });
-      const res = await fetch("http://localhost:2000/api/v1/projects", {
+      const res = await fetch(`${API}/api/v1/projects`, {
   method: "POST",
   credentials: "include",
   body: formData,

@@ -10,7 +10,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-
+const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function CertificateDetails() {
   const { id } = useParams();
   const [certificate, setCertificate] = useState(null);
@@ -22,7 +22,7 @@ export default function CertificateDetails() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:2000/api/v1/certificate/${id}`);
+        const res = await axios.get(`${API}/api/v1/certificate/${id}`);
         const data = res?.data?.certification || res?.data?.certificate || null;
         setCertificate(data);
       } catch (err) {

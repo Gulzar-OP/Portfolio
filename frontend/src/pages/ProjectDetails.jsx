@@ -193,7 +193,7 @@ function TabButton({ active, onClick, icon: Icon, label }) {
     </button>
   );
 }
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function ProjectDetails() {
   const { slug } = useParams();
   const [project, setProject] = useState(null);
@@ -204,7 +204,7 @@ export default function ProjectDetails() {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`http://localhost:2000/api/v1/projects/${slug}`);
+        const res = await axios.get(`${API}/api/v1/projects/${slug}`);
         setProject(res.data?.project || res.data);
       } catch (error) {
         setProject(null);

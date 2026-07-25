@@ -16,7 +16,7 @@ import BlogForm from "./forms/BlogForm";
 import SkillForm from "./forms/SkillForm";
 import ProfileForm from "./forms/ProfileForm";
 
-const URI = "http://localhost:2000";
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 export default function Dashboard() {
   const [projects, setProjects] = useState([]);
@@ -35,10 +35,10 @@ export default function Dashboard() {
       setLoading(true);
       try {
         const [projectsRes, blogsRes, skillsRes, messagesRes] = await Promise.allSettled([
-          axios.get(`${URI}/api/v1/projects`),
-          axios.get(`${URI}/api/v1/blogs`),
-          axios.get(`${URI}/api/v1/skills`),
-          axios.get(`${URI}/api/v1/education`),
+          axios.get(`${API}/api/v1/projects`),
+          axios.get(`${API}/api/v1/blogs`),
+          axios.get(`${API}/api/v1/skills`),
+          axios.get(`${API}/api/v1/education`),
         ]);
 
         if (!isMounted) return;

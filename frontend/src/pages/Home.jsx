@@ -25,7 +25,7 @@ export default function Home() {
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
   const [certificate, setCertificate] = useState([]);
-  const API = import.meta.env.VITE_API;
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
   useEffect(() => {
     let isMounted = true;
 
@@ -38,9 +38,9 @@ export default function Home() {
   certificateRes,
 ] = await Promise.allSettled([
   axios.get(`${API}/api/v1/profile`, { withCredentials: true }),
-  axios.get("http://localhost:2000/api/v1/blogs"),
-  axios.get("http://localhost:2000/api/v1/projects"),
-  axios.get("http://localhost:2000/api/v1/certificate"),
+  axios.get(`${API}/api/v1/blogs`),
+  axios.get(`${API}/api/v1/projects`),
+  axios.get(`${API}/api/v1/certificate`),
 ]);
 
 console.log('api le ',API)

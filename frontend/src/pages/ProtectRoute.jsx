@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 const ProtectedRoute = () => {
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
     const verifyUser = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:2000/api/v1/auth/me",
+          `${API}/api/v1/auth/me`,
           {
             withCredentials: true,
           }

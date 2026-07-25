@@ -18,22 +18,15 @@ import * as FaIcons from "react-icons/fa";
 const getIcon = (iconName) => {
   return FaIcons[iconName] || FaCode;
 };
-
+const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function AboutMe() {
-//   const skills = [
-//     { name: "React", icon: <FaReact /> },
-//     { name: "Node.js", icon: <FaNodeJs /> },
-//     { name: "MongoDB", icon: <FaDatabase /> },
-//     { name: "Responsive UI", icon: <FaMobileAlt /> },
-//     { name: "Full Stack", icon: <FaCode /> },
-//   ];
-
+  
   const [skills, setSkills] = React.useState([]);
 useEffect(() => {
   const fetchSkills = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:2000/api/v1/skills"
+        `${API}/api/v1/skills`
       );
 
       console.log(response.data);
@@ -52,7 +45,7 @@ useEffect(() => {
   const fetchEducation = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:2000/api/v1/education"
+        `${API}/api/v1/education`
       );
 
       setEducation(response.data.education);

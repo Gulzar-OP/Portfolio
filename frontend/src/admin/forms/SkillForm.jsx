@@ -13,12 +13,12 @@ const Input = (props) => (
     className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none placeholder:text-gray-500 focus:border-violet-500"
   />
 );
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function SkillForm({ setOpenModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    await fetch("http://localhost:2000/api/v1/skills", {
+    await fetch(`${API}/api/v1/skills`, {
       method: "POST",
       body: formData,
     });

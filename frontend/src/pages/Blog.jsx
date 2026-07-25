@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaClock, FaUser, FaArrowRight } from "react-icons/fa";
 
-const URI = "http://localhost:2000";
+const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
@@ -12,7 +12,7 @@ export default function Blog() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${URI}/api/v1/blogs`);
+        const res = await axios.get(`${API}/api/v1/blogs`);
 
         setBlogs(res.data.blogs || []);
       } catch (error) {

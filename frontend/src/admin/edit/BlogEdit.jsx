@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
-const URI = "http://localhost:2000/api/v1/blogs";
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 const Field = ({ label, children, className = "" }) => (
   <div className={className}>
@@ -53,7 +53,7 @@ const [blog, setBlog] = React.useState({
     const fetchBlog = async () => {
       try {
         setPageLoading(true);
-        const { data } = await axios.get(`${URI}/${id}`);
+        const { data } = await axios.get(`${API}/api/v1/blogs/${id}`);
         console.log(data);
         const b = data?.blog || {};
 
@@ -125,7 +125,7 @@ const [blog, setBlog] = React.useState({
 
       if (thumbnailFile) form.append("thumbnail", thumbnailFile);
 
-      await axios.put(`${URI}/${id}`, form, {
+      await axios.put(`${API}/api/v1/blogs/${id}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

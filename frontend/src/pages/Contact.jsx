@@ -9,7 +9,7 @@ import {
   FaPaperPlane,
   FaWhatsapp,
 } from "react-icons/fa";
-
+const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function Contact() {
   const [form, setForm] = useState({
     name: "",
@@ -34,7 +34,7 @@ export default function Contact() {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:2000/api/v1/contact", form);
+      const res = await axios.post(`${API}/api/v1/contact`, form);
       setSuccess(res.data?.message || "Message sent successfully.");
       setForm({
         name: "",

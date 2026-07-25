@@ -4,13 +4,13 @@ import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function Project() {
     const [projectsData, setProjectsData] = useState([]);
     useEffect(() => {
     const fetchProjects = async () => {
         const response = await axios.get(
-        "http://localhost:2000/api/v1/projects"
+        `${API}/api/v1/projects`
         );
         console.log(response.data.projects);
         setProjectsData(response.data.projects);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPlus, FaTrash, FaEdit, FaTimes, FaCheck } from "react-icons/fa";
 
-const URI = "http://localhost:2000";
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 const emptyForm = { name: "", category: "", level: "" };
 
@@ -19,7 +19,7 @@ export default function AdminSkill() {
   const fetchSkills = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${URI}/api/v1/skills`);
+      const res = await axios.get(`${API}/api/v1/skills`);
       setSkills(res.data.data || []);
       console.log(res.data);
       setError("");
@@ -51,14 +51,14 @@ export default function AdminSkill() {
     setSubmitting(true);
     try {
       if (editingId) {
-        const res = await axios.put(`${URI}/api/v1/skills/${editingId}`, form, {
+        const res = await axios.put(`${API}/api/v1/skills/${editingId}`, form, {
           withCredentials: true,
         });
         console.log(res.data);
         const updated = res.data.data || { ...form, _id: editingId };
         setSkills((prev) => prev.map((s) => (s._id === editingId ? updated : s)));
       } else {
-        const res = await axios.post(`${URI}/api/v1/skills`, form, {
+        const res = await axios.post(`${API}/api/v1/skills`, form, {
           withCredentials: true,
         });
         console.log(res.data);
@@ -88,7 +88,7 @@ export default function AdminSkill() {
     if (!window.confirm("Delete this skill?")) return;
     setDeletingId(id);
     try {
-      await axios.delete(`${URI}/api/v1/skills/${id}`, { withCredentials: true });
+      await axios.delete(`${API}/api/v1/skills/${id}`, { withCredentials: true });
       setSkills((prev) => prev.filter((s) => s._id !== id));
       if (editingId === id) resetForm();
     } catch (err) {

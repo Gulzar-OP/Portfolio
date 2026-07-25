@@ -18,7 +18,7 @@ import {
   FaQuoteLeft,
 } from "react-icons/fa";
 
-const URI = "http://localhost:2000";
+const API = import.meta.env.VITE_API || "http://localhost:2000"
 
 /* ---------- helpers ---------- */
 
@@ -136,7 +136,7 @@ export default function BlogDetails() {
     const fetchBlog = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${URI}/api/v1/blogs/${slug}`);
+        const res = await axios.get(`${API}/api/v1/blogs/${slug}`);
         if (!ignore) {
           setBlog(res.data.blog || res.data);
           setError("");

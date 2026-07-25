@@ -1,6 +1,6 @@
 // File: Login.jsx
 import React, { useState } from "react";
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -8,7 +8,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await fetch("http://localhost:2000/api/v1/auth/login", {
+    const res = await fetch(`${API}/api/v1/auth/login`, {
     method: "POST",
     credentials: "include", 
     headers: {

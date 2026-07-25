@@ -1,5 +1,5 @@
 import React from "react";
-
+  const API = import.meta.env.VITE_API || "http://localhost:2000"
 const Field = ({ label, className = "", children }) => (
   <div className={className}>
     <label className="mb-2 block text-sm font-medium text-gray-300">{label}</label>
@@ -28,7 +28,7 @@ const handleSubmit = async (e) => {
   const formData = new FormData(e.currentTarget);
 
   try {
-    const res = await fetch("http://localhost:2000/api/v1/blogs", {
+    const res = await fetch(`${API}/api/v1/blogs`, {
       method: "POST",
       credentials: "include",
       body: formData,
