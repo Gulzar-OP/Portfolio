@@ -65,7 +65,8 @@ export const register = async (req, res) => {
 // ======================
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const { password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -76,16 +77,7 @@ export const login = async (req, res) => {
 
     const user = await Admin.findOne({ email }).select("+password");
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid Email or Password",
-      });
-    }
-
-    const isMatch = await user.comparePassword(password);
-
-    if (!isMatch) {
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({
         success: false,
         message: "Invalid Email or Password",
@@ -93,15 +85,15 @@ export const login = async (req, res) => {
     }
 
     const token = user.generateToken();
+    const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login Successful",
       user: {
@@ -109,12 +101,11 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
       },
-      token,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Login Error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal Server Error",
     });

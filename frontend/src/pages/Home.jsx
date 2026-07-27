@@ -15,6 +15,7 @@ import {
   FaEnvelope,
   FaCalendarAlt,
   FaCheckCircle,
+  FaChevronDown,
 } from "react-icons/fa";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -25,49 +26,39 @@ export default function Home() {
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
   const [certificate, setCertificate] = useState([]);
-  const API = import.meta.env.VITE_API || "http://localhost:2000"
+  const API = import.meta.env.VITE_API || "http://localhost:3000";
+
   useEffect(() => {
     let isMounted = true;
 
     const fetchData = async () => {
       try {
-        const [
-  profileRes,
-  blogRes,
-  projectRes,
-  certificateRes,
-] = await Promise.allSettled([
-  axios.get(`${API}/api/v1/profile`, { withCredentials: true }),
-  axios.get(`${API}/api/v1/blogs`),
-  axios.get(`${API}/api/v1/projects`),
-  axios.get(`${API}/api/v1/certificate`),
-]);
+        const [profileRes, blogRes, projectRes, certificateRes] =
+          await Promise.allSettled([
+            axios.get(`${API}/api/v1/profile`, { withCredentials: true }),
+            axios.get(`${API}/api/v1/blogs`),
+            axios.get(`${API}/api/v1/projects`),
+            axios.get(`${API}/api/v1/certificate`),
+          ]);
 
-console.log('api le ',API)
-console.log(import.meta.env)
-
-if (profileRes.status === "fulfilled") {
-  setProfile(profileRes.value.data.profile);
-}
-
-if (blogRes.status === "fulfilled") {
-  setBlogs(blogRes.value.data.blogs || []);
-}
-
-if (projectRes.status === "fulfilled") {
-  setProjects(projectRes.value.data.projects || []);
-}
-
-if (certificateRes.status === "fulfilled") {
-  setCertificate(certificateRes.value?.data.certifications || []);
-}
+        if (profileRes.status === "fulfilled") {
+          setProfile(profileRes.value.data.profile);
+        }
+        if (blogRes.status === "fulfilled") {
+          setBlogs(blogRes.value.data.blogs || []);
+        }
+        if (projectRes.status === "fulfilled") {
+          setProjects(projectRes.value.data.projects || []);
+        }
+        if (certificateRes.status === "fulfilled") {
+          setCertificate(certificateRes.value?.data.certifications || []);
+        }
       } catch (error) {
         console.log(error);
       } finally {
         if (isMounted) setLoading(false);
       }
     };
-   
 
     fetchData();
 
@@ -75,8 +66,11 @@ if (certificateRes.status === "fulfilled") {
       isMounted = false;
     };
   }, []);
-//  console.log(certificate);
-  const skills = ["React", "JavaScript", "Tailwind CSS", "Node.js", "Express", "MongoDB", "Redux", "JWT", "REST API", "Framer Motion", "HTML", "CSS"];
+
+  const skills = [
+    "React", "JavaScript", "Tailwind CSS", "Node.js", "Express",
+    "MongoDB", "Redux", "JWT", "REST API", "Framer Motion", "HTML", "CSS",
+  ];
 
   const services = [
     { icon: <FaLaptopCode />, title: "Frontend Development", desc: "Responsive, modern UI with React and Tailwind." },
@@ -119,39 +113,39 @@ if (certificateRes.status === "fulfilled") {
   };
 
   return (
-    <div className="min-h-screen bg-[#07070a] text-white flex flex-col">
-
+    <div className="min-h-screen bg-[#07070a] text-white flex flex-col overflow-x-hidden">
       <main className="flex-1">
+        {/* HERO */}
         <motion.section
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 grid lg:grid-cols-2 gap-12 items-center"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-16 md:pt-24 pb-28 sm:pb-24 md:pb-28 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
         >
-          <motion.div variants={fadeUp}>
-            <p className="text-violet-400 font-medium mb-6 tracking-wide mt-10">
+          <motion.div variants={fadeUp} className="order-2 lg:order-1 text-center lg:text-left">
+            <p className="text-violet-400 font-medium mb-10 sm:mb-6 tracking-wide">
               Welcome to my portfolio
             </p>
 
-            <h1 className="text-3xl md:text-6xl font-bold leading-tight">
-              Hello, I&apos;m{" "} <br />
-              <span className="text-white text-6xl">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight">
+              Hello, I&apos;m <br />
+              <span className="text-white">
                 Gulzar <span className="text-violet-400">Hussain</span>
               </span>
             </h1>
 
-            <div className="mt-2 h-1 ml-49 w-58 bg-violet-500 rounded-full" />
+            <div className="mt-2 h-1 w-24 sm:w-32 bg-violet-500 rounded-full mx-auto lg:mx-0" />
 
-            <h2 className="text-2xl mt-10 font-bold leading-tight text-gray-100">
+            <h2 className="text-xl sm:text-2xl mt-8 font-bold leading-tight text-gray-100">
               {loading ? "Loading..." : profile?.title || "MERN Stack Developer"}
             </h2>
 
-            <p className="mt-8 text-gray-400 text-lg leading-8 max-w-xl">
+            <p className="mt-6 text-gray-400 text-base sm:text-lg leading-7 sm:leading-8 max-w-xl mx-auto lg:mx-0">
               {profile?.about ||
                 "I build modern web applications with React, Node.js, Express, MongoDB, and Tailwind CSS. I focus on performance, clean design, and great user experience."}
             </p>
 
-            <div className="mt-12 flex flex-wrap gap-4">
+            <div className="mt-10 flex flex-wrap justify-center lg:justify-start gap-4">
               <Link
                 to="/projects"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-lg shadow-violet-600/20"
@@ -167,83 +161,86 @@ if (certificateRes.status === "fulfilled") {
               </Link>
             </div>
 
-            <div className="mt-10 flex items-center gap-4 text-xl text-gray-400">
+            <div className="mt-10 flex items-center justify-center lg:justify-start gap-4 text-xl text-gray-400">
               <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-violet-400 transition"><FaGithub /></a>
               <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-violet-400 transition"><FaLinkedin /></a>
               <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-violet-400 transition"><FaInstagram /></a>
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="relative">
+          <motion.div
+            variants={fadeUp}
+            className="order-1 lg:order-2 relative mx-auto w-full max-w-[360px] sm:max-w-[440px] lg:max-w-[560px] pb-16 sm:pb-20"
+          >
+            {/* Cover */}
+            <div className="w-full h-[220px] sm:h-[280px] md:h-[320px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
+              <img
+                src={
+                  profile?.coverImage ||
+                  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4"
+                }
+                alt="Cover"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07070a] via-transparent to-transparent" />
+            </div>
 
-  {/* Cover */}
-  <div className="w-full lg:w-[560px] h-[320px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-    {profile?.coverImage ? (
-      <img
-        src={profile.coverImage}
-        alt="Cover"
-        className="w-full h-full object-cover"
-      />
-    ) : (
-      <img
-        src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4"
-        alt="Cover"
-        className="w-full h-full object-cover"
-      />
-    )}
-
-    <div className="absolute inset-0 bg-gradient-to-t from-[#07070a] via-transparent to-transparent" />
-  </div>
-
-  {/* Profile */}
-  <div className="group absolute -bottom-14 left-8 z-50">
-
-    <div className="w-46 h-66 rounded-2xl overflow-hidden border-4 border-[#07070a] shadow-xl transition-all duration-500 group-hover:w-56 group-hover:h-56">
-
-      <img
-        src={profile?.profileImage}
-        className="w-76 h-96 object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-
-    </div>
-
-  </div>
-
-</motion.div>
-
+            {/* Profile */}
+            <div className="group absolute -bottom-2 sm:-bottom-4 left-6 sm:left-8 z-10">
+              <div className="w-28 h-36 sm:w-36 sm:h-44 md:w-44 md:h-56 rounded-2xl overflow-hidden border-4 border-[#07070a] shadow-xl transition-all duration-500">
+                <img
+                  src={profile?.profileImage}
+                  alt={profile?.name || "Profile"}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+            </div>
+          </motion.div>
         </motion.section>
 
+        {/* scroll cue */}
+        <div className="flex justify-center -mt-16 sm:-mt-10 mb-8 text-violet-400/70">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+          >
+            <FaChevronDown />
+          </motion.div>
+        </div>
+
+        {/* STATS */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
         >
           {stats.map((item) => (
             <motion.div
               key={item.label}
               variants={fadeUp}
-              className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition"
+              className="p-5 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition text-center sm:text-left"
             >
-              <h3 className="text-3xl font-bold">{item.value}</h3>
-              <p className="text-gray-400 mt-2">{item.label}</p>
+              <h3 className="text-2xl sm:text-3xl font-bold">{item.value}</h3>
+              <p className="text-gray-400 mt-2 text-sm sm:text-base">{item.label}</p>
             </motion.div>
           ))}
         </motion.section>
 
+        {/* ABOUT + SERVICES */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 mt-10 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="grid lg:grid-cols-2 gap-10 items-start">
-            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 items-start">
+            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8">
               <p className="text-violet-400 font-medium mb-3">About Me</p>
-              <h2 className="text-3xl font-bold">Passionate about building useful web products</h2>
-              <p className="mt-5 text-gray-400 leading-8">
+              <h2 className="text-2xl sm:text-3xl font-bold">Passionate about building useful web products</h2>
+              <p className="mt-5 text-gray-400 leading-7 sm:leading-8">
                 I design and develop full-stack web applications with a focus on clean architecture,
                 modern UI, and smooth user experience. I enjoy turning ideas into scalable products.
               </p>
@@ -272,24 +269,25 @@ if (certificateRes.status === "fulfilled") {
           </div>
         </motion.section>
 
+        {/* PROJECTS */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
             <div>
               <p className="text-violet-400 font-medium">Featured Projects</p>
-              <h2 className="text-3xl font-bold mt-2">Some recent work</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-2">Some recent work</h2>
             </div>
             <Link to="/projects" className="text-violet-400 hover:text-violet-300 transition">
               View all
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {(projects.length ? projects.slice(0, 3) : [
               { _id: 1, title: "E-commerce Platform", description: "Modern shopping app with cart, auth, and admin panel." },
               { _id: 2, title: "School Management System", description: "Dashboard for students, teachers, and admin workflows." },
@@ -306,24 +304,25 @@ if (certificateRes.status === "fulfilled") {
           </div>
         </motion.section>
 
+        {/* BLOGS */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
             <div>
               <p className="text-violet-400 font-medium">Latest Blogs</p>
-              <h2 className="text-3xl font-bold mt-2">Ideas and tutorials</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-2">Ideas and tutorials</h2>
             </div>
             <Link to="/blogs" className="text-violet-400 hover:text-violet-300 transition">
               View all
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {(blogs.length ? blogs.slice(0, 3) : [
               { _id: 1, title: "Getting Started with MERN Stack", excerpt: "Learn how to build your first MERN Stack application from scratch." },
               { _id: 2, title: "React UI Best Practices", excerpt: "Make your interfaces cleaner, faster, and more maintainable." },
@@ -340,18 +339,19 @@ if (certificateRes.status === "fulfilled") {
           </div>
         </motion.section>
 
+        {/* TIMELINE + CERTIFICATES */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="grid lg:grid-cols-2 gap-10">
-            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10">
+            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center gap-3 text-violet-400 text-xl">
                 <FaCalendarAlt />
-                <h2 className="text-2xl font-bold text-white">Experience Timeline</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">Experience Timeline</h2>
               </div>
               <div className="mt-6 space-y-5">
                 {timeline.map((item) => (
@@ -365,47 +365,54 @@ if (certificateRes.status === "fulfilled") {
               </div>
             </motion.div>
 
-            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center gap-3 text-violet-400 text-xl">
                 <FaCertificate />
-                <h2 className="text-2xl font-bold text-white">Certificates & Achievements</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">Certificates & Achievements</h2>
               </div>
               <div className="mt-6 space-y-4">
-                {certificate.map((item) => (
-                  <Link
-                   to={`/certificates/${item._id}`}
-                   key={item.title} className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10">
-                    <div className="text-violet-400 text-xl mt-1">
-                      <FaAward />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="text-sm text-gray-400">{item.issuer} • {item.year}</p>
-                    </div>
-                  </Link>
-                ))}
+                {certificate.length ? (
+                  certificate.map((item) => (
+                    <Link
+                      to={`/certificates/${item._id}`}
+                      key={item._id || item.title}
+                      className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition"
+                    >
+                      <div className="text-violet-400 text-xl mt-1">
+                        <FaAward />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{item.title}</h3>
+                        <p className="text-sm text-gray-400">{item.issuer} • {item.year}</p>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">No certificates added yet.</p>
+                )}
               </div>
             </motion.div>
           </div>
         </motion.section>
 
+        {/* TESTIMONIALS + PROCESS */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="grid lg:grid-cols-2 gap-10">
-            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10">
+            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center gap-3 text-violet-400 text-xl">
                 <FaQuoteLeft />
-                <h2 className="text-2xl font-bold text-white">Testimonials</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">Testimonials</h2>
               </div>
               <div className="mt-6 grid sm:grid-cols-2 gap-4">
                 {testimonials.map((item) => (
                   <div key={item.name} className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
-                    <p className="text-gray-300 leading-7">"{item.text}"</p>
+                    <p className="text-gray-300 leading-7">&ldquo;{item.text}&rdquo;</p>
                     <p className="mt-4 font-semibold">{item.name}</p>
                     <p className="text-sm text-gray-400">{item.role}</p>
                   </div>
@@ -413,16 +420,16 @@ if (certificateRes.status === "fulfilled") {
               </div>
             </motion.div>
 
-            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-8">
+            <motion.div variants={fadeUp} className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center gap-3 text-violet-400 text-xl">
                 <FaCheckCircle />
-                <h2 className="text-2xl font-bold text-white">My Process</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-white">My Process</h2>
               </div>
               <div className="mt-6 grid grid-cols-2 gap-4">
                 {process.map((step, index) => (
                   <div key={step} className="p-4 rounded-2xl bg-white/[0.03] border border-white/10">
                     <p className="text-violet-300 text-sm">Step {index + 1}</p>
-                    <h3 className="mt-2 font-semibold">{step}</h3>
+                    <h3 className="mt-2 font-semibold text-sm sm:text-base">{step}</h3>
                   </div>
                 ))}
               </div>
@@ -430,24 +437,25 @@ if (certificateRes.status === "fulfilled") {
           </div>
         </motion.section>
 
+        {/* CTA */}
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={fadeUp}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20"
         >
-          <div className="rounded-3xl bg-violet-600/10 border border-violet-400/20 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="rounded-3xl bg-violet-600/10 border border-violet-400/20 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <p className="text-violet-300 font-medium">Let's work together</p>
-              <h2 className="text-3xl font-bold mt-2">Need a modern website or dashboard?</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-2">Need a modern website or dashboard?</h2>
               <p className="text-gray-300 mt-3 max-w-2xl leading-7">
                 I can build responsive portfolio sites, admin panels, MERN apps, and custom web solutions with clean UI and scalable structure.
               </p>
             </div>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-lg shadow-violet-600/20"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-lg shadow-violet-600/20 shrink-0"
             >
               <FaEnvelope />
               Contact Me
@@ -455,17 +463,18 @@ if (certificateRes.status === "fulfilled") {
           </div>
         </motion.section>
 
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="rounded-3xl bg-white/[0.03] border border-white/10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* RESUME */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
+          <div className="rounded-3xl bg-white/[0.03] border border-white/10 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <p className="text-violet-400 font-medium">Resume Download</p>
-              <h2 className="text-3xl font-bold mt-2">Download my resume for a quick overview</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mt-2">Download my resume for a quick overview</h2>
               <p className="text-gray-300 mt-3 max-w-2xl leading-7">
                 Get a quick look at my experience, skills, projects, and technical background in one PDF file.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 shrink-0">
               <a
                 href="/resume/Gulzar-Hussain-Resume.pdf"
                 target="_blank"
