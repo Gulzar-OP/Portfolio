@@ -26,6 +26,7 @@ export default function Home() {
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
   const [certificate, setCertificate] = useState([]);
+  const [skill , setSkill] = useState([]);
   const API = import.meta.env.VITE_API || "http://localhost:3000";
 
   useEffect(() => {
@@ -33,12 +34,13 @@ export default function Home() {
 
     const fetchData = async () => {
       try {
-        const [profileRes, blogRes, projectRes, certificateRes] =
+        const [profileRes, blogRes, projectRes, certificateRes, skillRes] =
           await Promise.allSettled([
             axios.get(`${API}/api/v1/profile`, { withCredentials: true }),
             axios.get(`${API}/api/v1/blogs`),
             axios.get(`${API}/api/v1/projects`),
             axios.get(`${API}/api/v1/certificate`),
+            axios.get(`${API}/api/v1/skills`)
           ]);
 
         if (profileRes.status === "fulfilled") {
@@ -52,6 +54,9 @@ export default function Home() {
         }
         if (certificateRes.status === "fulfilled") {
           setCertificate(certificateRes.value?.data.certifications || []);
+        }
+        if (skillRes.status === "fulfilled") {
+          setSkill(skillRes.value?.data.data || []);
         }
       } catch (error) {
         console.log(error);
@@ -67,10 +72,6 @@ export default function Home() {
     };
   }, []);
 
-  const skills = [
-    "React", "JavaScript", "Tailwind CSS", "Node.js", "Express",
-    "MongoDB", "Redux", "JWT", "REST API", "Framer Motion", "HTML", "CSS",
-  ];
 
   const services = [
     { icon: <FaLaptopCode />, title: "Frontend Development", desc: "Responsive, modern UI with React and Tailwind." },
@@ -245,12 +246,15 @@ export default function Home() {
                 modern UI, and smooth user experience. I enjoy turning ideas into scalable products.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <span key={skill} className="px-4 py-2 rounded-full bg-violet-500/10 text-violet-300 border border-violet-400/20 text-sm">
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              {skill.map((s) => (
+                <span
+                  key={s._id}
+                  className="px-4 py-2 rounded-full bg-violet-500/10 text-violet-300 border border-violet-400/20 text-sm"
+                >
+                  {s.name}
+                </span>
+              ))}
+            </div>
             </motion.div>
 
             <motion.div variants={stagger} className="grid sm:grid-cols-2 gap-4">
@@ -271,7 +275,7 @@ export default function Home() {
 
         {/* PROJECTS */}
         <motion.section
-          initial="hidden"
+          // initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
@@ -306,7 +310,7 @@ export default function Home() {
 
         {/* BLOGS */}
         <motion.section
-          initial="hidden"
+          // initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
           variants={stagger}
