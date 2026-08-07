@@ -73,7 +73,7 @@ export default function Blog() {
               {blogs.map((blog) => (
                 <Link
                   key={blog._id}
-                  to={`/blogs/${blog._id}`}
+                  to={`/resources/blogs/${blog._id}`}
                   className="group rounded-3xl overflow-hidden bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300"
                 >
                   {/* Image */}

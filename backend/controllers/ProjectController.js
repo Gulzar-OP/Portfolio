@@ -38,70 +38,102 @@ const getPublicIdFromUrl = (url = "") => {
 // Create Project
 // =====================================
 export const createProject = async (req, res) => {
-    console.log("BODY:", req.body);
+  console.log("BODY:", req.body);
   console.log("FILES:", req.files);
+
   try {
     const {
       title,
       slug,
       shortDescription,
-      description,
+      content,
+
       category,
-      github,
+
+      githubFrontend,
+      githubBackend,
+
       liveDemo,
       figma,
       videoDemo,
+
       featured,
       status,
-      startDate,
-      completionDate,
+
+      seoTitle,
+      seoDescription,
+
       order,
     } = req.body;
+
+    // Check duplicate slug
+    const existingProject = await Project.findOne({
+      slug: slug?.trim() || createSlug(title),
+    });
+
+    if (existingProject) {
+      return res.status(400).json({
+        success: false,
+        message: "Slug already exists.",
+      });
+    }
 
     const projectData = {
       title,
       slug: slug?.trim() || createSlug(title),
+
       shortDescription,
-      description,
+      content,
+
       category,
+
       technologies: toArray(req.body.technologies),
-      github: github || "",
+      tags: toArray(req.body.tags),
+
+      githubFrontend: githubFrontend || "",
+      githubBackend: githubBackend || "",
+
       liveDemo: liveDemo || "",
       figma: figma || "",
       videoDemo: videoDemo || "",
-      features: toArray(req.body.features),
-      challenges: toArray(req.body.challenges),
-      learnings: toArray(req.body.learnings),
-      featured: featured === "true",
+
+      featured: featured === "true" || featured === true,
+
       status: status || "Completed",
-      startDate: startDate || null,
-      completionDate: completionDate || null,
-      order: order ? Number(order) : 0,
+
+      seoTitle: seoTitle || "",
+      seoDescription: seoDescription || "",
+
+      order: Number(order) || 0,
+
       thumbnail: "",
-      images: [],
+      gallery: [],
     };
 
-    // Cloudinary storage: file.path mein full hosted URL milta hai
+    // Thumbnail Upload
     if (req.files?.thumbnail?.[0]) {
       projectData.thumbnail = req.files.thumbnail[0].path;
     }
 
-    if (req.files?.images?.length) {
-      projectData.images = req.files.images.map((file) => file.path);
+    // Gallery Upload
+    if (req.files?.gallery?.length) {
+      projectData.gallery = req.files.gallery.map((file) => file.path);
     }
 
     const project = await Project.create(projectData);
 
     return res.status(201).json({
       success: true,
-      message: "Project created successfully",
+      message: "Project created successfully.",
       project,
     });
+
   } catch (error) {
     console.error(error);
+
     return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: error.message,
     });
   }
 };
@@ -113,14 +145,22 @@ export const getAllProjects = async (req, res) => {
   try {
     const filter = {};
 
+    // Featured Filter
     if (req.query.featured === "true") {
       filter.featured = true;
     }
 
+    // Published Filter
+    if (req.query.published) {
+      filter.published = req.query.published === "true";
+    }
+
+    // Category Filter
     if (req.query.category) {
       filter.category = req.query.category;
     }
 
+    // Status Filter
     if (req.query.status) {
       filter.status = req.query.status;
     }
@@ -130,13 +170,15 @@ export const getAllProjects = async (req, res) => {
       createdAt: -1,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       count: projects.length,
       projects,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -194,8 +236,11 @@ export const updateProject = async (req, res) => {
   try {
     const projectData = { ...req.body };
 
-    // technologies FormData se string ban ke aata hai, JSON parse karo
-    if (projectData.technologies && typeof projectData.technologies === "string") {
+    // Technologies
+    if (
+      projectData.technologies &&
+      typeof projectData.technologies === "string"
+    ) {
       try {
         projectData.technologies = JSON.parse(projectData.technologies);
       } catch {
@@ -203,54 +248,79 @@ export const updateProject = async (req, res) => {
       }
     }
 
-    // features/challenges/learnings agar bheje ja rahe hain toh unhe bhi normalize karo
-    if (projectData.features) projectData.features = toArray(projectData.features);
-    if (projectData.challenges) projectData.challenges = toArray(projectData.challenges);
-    if (projectData.learnings) projectData.learnings = toArray(projectData.learnings);
+    // Tags
+    if (projectData.tags) {
+      projectData.tags = toArray(projectData.tags);
+    }
 
-    // agar "true"/"false" string aayi hai featured ke liye
+    // Featured
     if (typeof projectData.featured === "string") {
       projectData.featured = projectData.featured === "true";
     }
 
-    if (projectData.order) projectData.order = Number(projectData.order);
+    // Order
+    if (projectData.order !== undefined) {
+      projectData.order = Number(projectData.order);
+    }
 
-    // Naya thumbnail aaya hai — Cloudinary full URL file.path mein hai
+    // Thumbnail
     if (req.files?.thumbnail?.[0]) {
       projectData.thumbnail = req.files.thumbnail[0].path;
     }
 
-    // Nayi images aayi hain
-    if (req.files?.images?.length) {
-      projectData.images = req.files.images.map((file) => file.path);
+    // Gallery
+    if (req.files?.gallery?.length) {
+      projectData.gallery = req.files.gallery.map((file) => file.path);
     }
 
-    // Frontend files ko project.images / project.thumbnail mein bhi bhej sakta hai
-    // (jab koi naya file select nahi hua) — un fields ko galti se overwrite hone se bachao
-    if (!req.files?.thumbnail?.[0] && projectData.thumbnail && typeof projectData.thumbnail !== "string") {
+    // Prevent accidental overwrite
+    if (
+      !req.files?.thumbnail?.[0] &&
+      projectData.thumbnail &&
+      typeof projectData.thumbnail !== "string"
+    ) {
       delete projectData.thumbnail;
     }
-    if (!req.files?.images?.length && projectData.images && typeof projectData.images !== "string" && !Array.isArray(projectData.images)) {
-      delete projectData.images;
+
+    if (
+      !req.files?.gallery?.length &&
+      projectData.gallery &&
+      !Array.isArray(projectData.gallery) &&
+      typeof projectData.gallery !== "string"
+    ) {
+      delete projectData.gallery;
+    }
+
+    // Slug
+    if (!projectData.slug && projectData.title) {
+      projectData.slug = createSlug(projectData.title);
     }
 
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      projectData,
-      { new: true, runValidators: true }
+      { $set: projectData },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      }
     );
 
     if (!project) {
-      return res.status(404).json({ success: false, message: "Project not found." });
+      return res.status(404).json({
+        success: false,
+        message: "Project not found.",
+      });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Project updated successfully.",
       project,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -271,33 +341,51 @@ export const deleteProject = async (req, res) => {
       });
     }
 
-    // Cloudinary se bhi images/thumbnail delete kar do (cleanup)
+    // =========================
+    // Delete Thumbnail
+    // =========================
     try {
       if (project.thumbnail) {
         const publicId = getPublicIdFromUrl(project.thumbnail);
-        if (publicId) await cloudinary.uploader.destroy(publicId);
+
+        if (publicId) {
+          await cloudinary.uploader.destroy(publicId);
+        }
       }
-      if (project.images?.length) {
+
+      // =========================
+      // Delete Gallery Images
+      // =========================
+      if (project.gallery?.length) {
         await Promise.all(
-          project.images.map((imgUrl) => {
-            const publicId = getPublicIdFromUrl(imgUrl);
-            return publicId ? cloudinary.uploader.destroy(publicId) : null;
+          project.gallery.map(async (imageUrl) => {
+            const publicId = getPublicIdFromUrl(imageUrl);
+
+            if (publicId) {
+              await cloudinary.uploader.destroy(publicId);
+            }
           })
         );
       }
-    } catch (cleanupErr) {
-      console.error("Cloudinary cleanup failed:", cleanupErr.message);
-      // delete continue karega even if cloudinary cleanup fail ho
+    } catch (cleanupError) {
+      console.error(
+        "Cloudinary cleanup failed:",
+        cleanupError.message
+      );
+
+      // Database delete phir bhi continue karega
     }
 
     await project.deleteOne();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Project deleted successfully.",
     });
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

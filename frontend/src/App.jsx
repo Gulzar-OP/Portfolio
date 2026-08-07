@@ -6,7 +6,7 @@ import Project from "./pages/Project";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
-import ProjectDetails from "./pages/ProjectDetails";
+import ProjectDetails from "./pages/project/ProjectDetails";
 import AboutMe from "./pages/AboutMe";
 import BlogDetails from "./pages/BlogDetails";
 import Dashboard from "./admin/Dashboard";
@@ -17,6 +17,9 @@ import ProjectEdit from "./admin/edit/ProjectEdit";
 import BlogEdit from "./admin/edit/BlogEdit";
 import ProtectedRoute from "./pages/ProtectRoute";
 import NotFound from "./pages/NotFound";
+import Resources from "./resource/Resources";
+import Notes from "./resource/Notes";
+import ComingSoon from "./pages/ComingSoon";
 
 export default function App() {
   return (
@@ -24,16 +27,18 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/blogs" element={<Blog />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="/resources/blogs" element={<Blog />} />
         <Route path="/projects" element={<Project />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/projects/:slug" element={<ProjectDetails />} />
         <Route path="/about" element={<AboutMe />} />
-        <Route path="/blogs/:slug" element={<BlogDetails />} />
+        <Route path="/resources/blogs/:slug" element={<BlogDetails />} />
         <Route path="/certificates/:id" element={<CertificateDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />}></Route>
-
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/resources/notes" element={<Notes />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/skills" element={<AdminSkill />} />
