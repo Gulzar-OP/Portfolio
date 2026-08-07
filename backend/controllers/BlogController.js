@@ -9,13 +9,17 @@ export const createBlog = async (req, res) => {
       excerpt,
       content,
       category,
-      tags,
       published,
       featured,
       seoTitle,
       seoDescription,
       order,
     } = req.body;
+    let tags = req.body.tags;
+
+    if (typeof tags === "string") {
+        tags = tags.split(",").map(tag => tag.trim());
+    }
 
     const existingBlog = await Blog.findOne({ slug });
 
@@ -32,7 +36,9 @@ export const createBlog = async (req, res) => {
       excerpt,
       content,
       category,
-      tags: tags ? tags.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
+      tags: Array.isArray(tags)
+  ? tags.filter(Boolean)
+  : [],
       published: published === "true" || published === true,
       featured: featured === "true" || featured === true,
       seoTitle,
@@ -132,8 +138,6 @@ export const getBlogBySlug = async (req, res) => {
 // Update Blog
 export const updateBlog = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-console.log("FILE:", req.file);
     const blog = await Blog.findById(req.params.id);
 
     if (!blog) {
@@ -184,7 +188,10 @@ console.log("FILE:", req.file);
     const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id,
       { $set: updateData },
-      { new: true, runValidators: true }
+      {
+        returnDocument: "after",
+        runValidators: true,
+      }
     );
 
     res.status(200).json({
