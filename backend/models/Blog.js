@@ -4,8 +4,9 @@ const blogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      // required: true,
+      required: true,
       trim: true,
+      maxlength: 150,
     },
 
     slug: {
@@ -14,12 +15,14 @@ const blogSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     excerpt: {
       type: String,
-      // required: true,
+      required: true,
       trim: true,
+      maxlength: 300,
     },
 
     content: {
@@ -36,16 +39,25 @@ const blogSchema = new mongoose.Schema(
       type: String,
       default: "General",
       trim: true,
+      index: true,
     },
 
-    tags: {
-      type: [String],
-      default: [],
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    author: {
+      type: String,
+      default: "Gulzar Hussain",
     },
 
     published: {
       type: Boolean,
       default: false,
+      index: true,
     },
 
     publishedAt: {
@@ -53,19 +65,22 @@ const blogSchema = new mongoose.Schema(
       default: null,
     },
 
+    featured: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+
     readTime: {
       type: Number,
       default: 1,
+      min: 1,
     },
 
     views: {
       type: Number,
       default: 0,
-    },
-
-    featured: {
-      type: Boolean,
-      default: false,
+      min: 0,
     },
 
     seoTitle: {
@@ -78,11 +93,15 @@ const blogSchema = new mongoose.Schema(
       default: "",
     },
 
+    canonicalUrl: {
+      type: String,
+      default: "",
+    },
+
     order: {
       type: Number,
       default: 0,
     },
-
   },
   {
     timestamps: true,
