@@ -33,7 +33,7 @@ export default function Navbar() {
     { name: "Home", path: "/", icon: <Home size={18} /> },
     { name: "About", path: "/about", icon: <User size={18} /> },
     { name: "Projects", path: "/projects", icon: <Briefcase size={18} /> },
-    { name: "Blog", path: "/blogs", icon: <BookOpen size={18} /> },
+    { name: "Resources", path: "/resources", icon: <BookOpen size={18} /> },
     { name: "Contact", path: "/contact", icon: <Mail size={18} /> },
   ];
 
