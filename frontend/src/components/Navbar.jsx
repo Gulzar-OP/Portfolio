@@ -72,7 +72,7 @@ export default function Navbar() {
             </div>
             <div className="leading-tight">
               <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                My<span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">Portfolio</span>
+                CodeBy<span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">Gulzar</span>
               </p>
               <p className="text-[11px] sm:text-xs text-gray-400">MERN Developer</p>
             </div>
