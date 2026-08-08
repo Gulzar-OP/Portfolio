@@ -1,6 +1,7 @@
 
 
 import transporter from "../config/email.js";
+import contactEmailTemplate from "../template/ContactEmail.js";
 
 export const sendContactEmail = async (req, res) => {
   try {
@@ -17,19 +18,15 @@ export const sendContactEmail = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       replyTo: email,
+
       subject: subject || `Portfolio Contact - ${name}`,
-      html: `
-        <h2>New Contact Message</h2>
 
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Subject:</strong> ${subject || "No subject"}</p>
-
-        <hr />
-
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
+      html: contactEmailTemplate({
+        name,
+        email,
+        subject,
+        message,
+      }),
     });
 
     res.status(200).json({
