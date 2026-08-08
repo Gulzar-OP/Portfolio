@@ -1,150 +1,47 @@
-import Contact from "../models/Contact.js";
 
-// Create Contact
-export const createContact = async (req, res) => {
+
+import transporter from "../config/email.js";
+
+export const sendContactEmail = async (req, res) => {
   try {
-    const contact = await Contact.create(req.body);
+    const { name, email, subject, message } = req.body;
 
-    res.status(201).json({
-      success: true,
-      message: "Message sent successfully.",
-      contact,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Get All Contacts
-export const getAllContacts = async (req, res) => {
-  try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      count: contacts.length,
-      contacts,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Get Contact By ID
-export const getContactById = async (req, res) => {
-  try {
-    const contact = await Contact.findById(req.params.id);
-
-    if (!contact) {
-      return res.status(404).json({
+    if (!name || !email || !message) {
+      return res.status(400).json({
         success: false,
-        message: "Contact not found.",
+        message: "Name, email and message are required",
       });
     }
 
-    res.status(200).json({
-      success: true,
-      contact,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      replyTo: email,
+      subject: subject || `Portfolio Contact - ${name}`,
+      html: `
+        <h2>New Contact Message</h2>
 
-// Mark as Read
-export const markAsRead = async (req, res) => {
-  try {
-    const contact = await Contact.findByIdAndUpdate(
-      req.params.id,
-      { isRead: true },
-      { new: true }
-    );
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject || "No subject"}</p>
 
-    if (!contact) {
-      return res.status(404).json({
-        success: false,
-        message: "Contact not found.",
-      });
-    }
+        <hr />
+
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
 
     res.status(200).json({
       success: true,
-      message: "Marked as read.",
-      contact,
+      message: "Message sent successfully",
     });
   } catch (error) {
+    console.error("Email Error:", error);
+
     res.status(500).json({
       success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Mark as Replied
-export const markAsReplied = async (req, res) => {
-  try {
-    const contact = await Contact.findByIdAndUpdate(
-      req.params.id,
-      {
-        replied: true,
-        repliedAt: new Date(),
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!contact) {
-      return res.status(404).json({
-        success: false,
-        message: "Contact not found.",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Marked as replied.",
-      contact,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Delete Contact
-export const deleteContact = async (req, res) => {
-  try {
-    const contact = await Contact.findById(req.params.id);
-
-    if (!contact) {
-      return res.status(404).json({
-        success: false,
-        message: "Contact not found.",
-      });
-    }
-
-    await contact.deleteOne();
-
-    res.status(200).json({
-      success: true,
-      message: "Contact deleted successfully.",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+      message: "Failed to send email",
     });
   }
 };
