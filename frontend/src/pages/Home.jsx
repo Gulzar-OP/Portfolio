@@ -23,6 +23,7 @@ import { motion } from "framer-motion";
 export default function Home() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showImage, setShowImage] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
   const [certificate, setCertificate] = useState([]);
@@ -177,8 +178,7 @@ export default function Home() {
             <div className="w-full h-[220px] sm:h-[280px] md:h-[320px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative">
               <img
                 src={
-                  profile?.coverImage ||
-                  "https://images.unsplash.com/photo-1515879218367-8466d910aaa4"
+                  "bg.png"
                 }
                 alt="Cover"
                 className="w-full h-full object-cover"
@@ -187,12 +187,15 @@ export default function Home() {
             </div>
 
             {/* Profile */}
-            <div className="group absolute -bottom-2 sm:-bottom-4 left-6 sm:left-8 z-10">
-              <div className="w-28 h-36 sm:w-36 sm:h-44 md:w-44 md:h-56 rounded-2xl overflow-hidden border-4 border-[#07070a] shadow-xl transition-all duration-500">
+            <div
+              className="group absolute -bottom-2 sm:-bottom-4 left-6 sm:left-8 z-10 cursor-pointer"
+              onClick={() => setShowImage(true)}
+            >
+              <div className="w-38 h-46 sm:w-36 sm:h-44 md:w-46 md:h-68 rounded-2xl overflow-hidden border-4  shadow-xl transition-all duration-500">
                 <img
-                  src={profile?.profileImage}
+                  src="/hero.jpeg"
                   alt={profile?.name || "Profile"}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-120"
                 />
               </div>
             </div>
@@ -208,6 +211,31 @@ export default function Home() {
             <FaChevronDown />
           </motion.div>
         </div>
+        {showImage && (
+          <div
+            className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setShowImage(false)}
+          >
+            <div
+              className="relative max-w-3xl max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setShowImage(false)}
+                className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-white text-black text-2xl font-bold shadow-lg hover:bg-red-500 hover:text-white transition-colors z-10"
+              >
+                ×
+              </button>
+
+              <img
+                src="/hero.jpeg"
+                alt="Gulzar"
+                className="max-w-full max-h-[90vh] rounded-2xl object-contain shadow-2xl"
+              />
+            </div>
+          </div>
+        )}
 
         {/* STATS */}
         <motion.section
