@@ -33,7 +33,7 @@ const categories = [
 const notes = [
   {
     icon: Braces,
-    tint: 'bg-orange-500/15 text-orange-400',
+    tint: 'bg-orange-500/15 textcv-orange-400',
     title: 'JavaScript Closures',
     desc: 'Understand closures with examples',
     tag: 'JavaScript',

@@ -128,6 +128,7 @@ export default function ProjectDetails() {
     () => normalizeArray(project?.challenges),
     [project]
   );
+  console.log(challenges)
 
   const learnings = useMemo(
     () => normalizeArray(project?.learnings),
@@ -142,7 +143,7 @@ const gallery = useMemo(() => {
 
   return images.length
     ? images
-    : ["/images/project-placeholder.png"];
+    : ["/bg.png"];
 }, [project]);
 
   const description =

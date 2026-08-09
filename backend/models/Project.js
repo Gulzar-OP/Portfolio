@@ -100,6 +100,29 @@ const projectSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    features: {
+      type: [String],
+      default: [],
+    },
+
+    learnings: {
+      type: [String],
+      default: [],
+    },
+    challenges: [
+      {
+        problem: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        solution: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+      },
+    ],
 
     status: {
       type: String,

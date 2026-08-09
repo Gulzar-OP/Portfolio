@@ -38,8 +38,6 @@ const getPublicIdFromUrl = (url = "") => {
 // Create Project
 // =====================================
 export const createProject = async (req, res) => {
-  console.log("BODY:", req.body);
-  console.log("FILES:", req.files);
 
   try {
     const {
@@ -62,6 +60,10 @@ export const createProject = async (req, res) => {
 
       seoTitle,
       seoDescription,
+
+      features,
+      learnings,
+      challenges,
 
       order,
     } = req.body;
@@ -108,6 +110,9 @@ export const createProject = async (req, res) => {
 
       thumbnail: "",
       gallery: [],
+      features,
+      learnings,
+      challenges
     };
 
     // Thumbnail Upload

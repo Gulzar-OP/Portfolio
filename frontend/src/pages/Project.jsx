@@ -49,7 +49,7 @@ export default function Project() {
                 <Link to={`/projects/${project._id}`}>
                   <div className="relative h-56 overflow-hidden">
                     <img
-                      src={project.thumbnail}
+                      src={project.thumbnail || "/bg.png"}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                     />
