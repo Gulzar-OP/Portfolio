@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { motion } from "framer-motion";
+import ChatBot from "../components/ChatBot";
 
 export default function Home() {
   const [profile, setProfile] = useState(null);
@@ -255,6 +256,7 @@ export default function Home() {
               <p className="text-gray-400 mt-2 text-sm sm:text-base">{item.label}</p>
             </motion.div>
           ))}
+          <ChatBot/>
         </motion.section>
 
         {/* ABOUT + SERVICES */}

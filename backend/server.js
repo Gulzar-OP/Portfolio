@@ -15,6 +15,7 @@ import ContactRoutes from './routes/ContactRoutes.js'
 import ProfileRoutes from './routes/ProfileRoute.js'
 import SettingRooutes from './routes/SettingRoutes.js'
 import ProjectRoutes from './routes/ProjectRoutes.js'
+import chatRoutes from "./routes/chatRoutes.js";
 
 import connectionDB from './config/connectDB.js';
 const app = express()
@@ -22,7 +23,7 @@ const app = express()
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      "http://localhost:5174",
       "https://portfolio-zeta-eosin-38.vercel.app",
       process.env.FRONTEND_API,
     ],
@@ -51,6 +52,7 @@ app.use('/api/v1/contact',ContactRoutes)
 app.use('/api/v1/profile',ProfileRoutes)
 app.use('/api/v1/settings',SettingRooutes)
 app.use('/api/v1/projects',ProjectRoutes)
+app.use("/api/v1/chat", chatRoutes);
 
 app.listen(PORT, () => {
   connectionDB();
