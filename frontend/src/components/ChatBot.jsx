@@ -128,7 +128,7 @@ export default function ChatBot() {
     <>
       {/* Chat window */}
       {isOpen && (
-        <section className="fixed bottom-34 right-40 z-50 flex h-[600px] max-h-[calc(100vh-120px)] w-[calc(100vw-32px)] max-w-[390px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950 shadow-2xl shadow-violet-950/40 sm:right-6">
+        <section className="fixed bottom-15 right-6 z-50 flex h-[600px] max-h-[calc(100vh-120px)] w-[calc(100vw-32px)] max-w-[390px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-slate-950 shadow-2xl shadow-violet-950/40 sm:right-6">
           {/* Header */}
           <header className="flex items-center justify-between bg-gradient-to-r from-violet-700 to-indigo-600 px-5 py-4 text-white">
             <div className="flex items-center gap-3">
@@ -292,7 +292,7 @@ export default function ChatBot() {
       <button
         type="button"
         onClick={() => setIsOpen((previous) => !previous)}
-        className="fixed bottom-20 right-30 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-xl shadow-violet-900/40 transition hover:scale-105 sm:right-6"
+        className="fixed bottom-4 right-3 z-50 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-xl shadow-violet-900/40 transition hover:scale-105 sm:right-6"
         aria-label={
           isOpen ? "Close chatbot" : "Open chatbot"
         }
