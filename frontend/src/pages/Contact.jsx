@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import {
   FaEnvelope,
   FaPhoneAlt,
@@ -81,7 +79,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Email</p>
-                    <p className="font-medium">gulzar@example.com</p>
+                    <p className="font-medium">gulzarhu80@gmail.com</p>
                   </div>
                 </div>
 
@@ -101,17 +99,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-400">Location</p>
-                    <p className="font-medium">Begusarai, Bihar, India</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-emerald-600/20 flex items-center justify-center text-emerald-400">
-                    <FaWhatsapp />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">WhatsApp</p>
-                    <p className="font-medium">Chat for quick discussion</p>
+                    <p className="font-medium">Nasirganj, Barsoi, Katihar, Bihar, India</p>
                   </div>
                 </div>
               </div>

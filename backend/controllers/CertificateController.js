@@ -5,21 +5,52 @@ import Certification from "../models/Certification.js";
 // ===================================
 export const createCertification = async (req, res) => {
   try {
-    const certification = await Certification.create(req.body);
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+    const certification = await Certification.create({
+      title: req.body.title,
+      issuer: req.body.issuer,
+      issueDate: req.body.issueDate,
+
+      doesNotExpire:
+        req.body.doesNotExpire === "true",
+
+      credentialID:
+        req.body.credentialID || "",
+
+      credentialURL:
+        req.body.credentialURL || "",
+
+      description:
+        req.body.description || "",
+
+      order:
+        Number(req.body.order) || 0,
+
+      featured:
+        req.body.featured === "true",
+
+      // Cloudinary URL
+      image: req.file?.path || "",
+    });
 
     res.status(201).json({
       success: true,
-      message: "Certification added successfully.",
+      message:
+        "Certification added successfully.",
       certification,
     });
+
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
-
 // ===================================
 // Get All Certifications
 // ===================================
