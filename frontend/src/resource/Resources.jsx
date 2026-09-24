@@ -24,7 +24,7 @@ const categories = [
     icon: BookOpen,
     title: 'Notes',
     count: '48 Notes',
-    click: './resources/notes',
+    click: './coming-soon',
     desc: 'Quick revision notes, concept explanations and topic summaries.',
     tint: 'bg-emerald-500/15 text-emerald-400',
   },
