@@ -34,11 +34,67 @@ const getPublicIdFromUrl = (url = "") => {
   }
 };
 
+const parseArrayField = (value) => {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+
+    if (!trimmed) return [];
+
+    try {
+      const parsed = JSON.parse(trimmed);
+
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch {
+      // JSON nahi hua to comma separated parse karega
+    }
+
+    return trimmed
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const parseChallenges = (value) => {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+
+      if (!Array.isArray(parsed)) {
+        throw new Error();
+      }
+
+      return parsed;
+    } catch {
+      throw new Error(
+        "Invalid challenges format. Send valid JSON array."
+      );
+    }
+  }
+
+  return [];
+};
+
 // =====================================
 // Create Project
 // =====================================
 export const createProject = async (req, res) => {
-
   try {
     const {
       title,
@@ -68,9 +124,15 @@ export const createProject = async (req, res) => {
       order,
     } = req.body;
 
-    // Check duplicate slug
+
+    // =========================
+    // DUPLICATE SLUG CHECK
+    // =========================
+
+    const finalSlug = slug?.trim() || createSlug(title);
+
     const existingProject = await Project.findOne({
-      slug: slug?.trim() || createSlug(title),
+      slug: finalSlug,
     });
 
     if (existingProject) {
@@ -80,61 +142,108 @@ export const createProject = async (req, res) => {
       });
     }
 
+
+    // =========================
+    // PREPARE PROJECT DATA
+    // =========================
+
     const projectData = {
       title,
-      slug: slug?.trim() || createSlug(title),
+
+      slug: finalSlug,
 
       shortDescription,
+
       content,
 
       category,
 
-      technologies: toArray(req.body.technologies),
-      tags: toArray(req.body.tags),
+      // Arrays
+      technologies: parseArrayField(req.body.technologies),
 
+      tags: parseArrayField(req.body.tags),
+
+      features: parseArrayField(features),
+
+      learnings: parseArrayField(learnings),
+
+      // Array of Objects
+      challenges: parseChallenges(challenges),
+
+      // Links
       githubFrontend: githubFrontend || "",
+
       githubBackend: githubBackend || "",
 
       liveDemo: liveDemo || "",
+
       figma: figma || "",
+
       videoDemo: videoDemo || "",
 
+      // Project Info
       featured: featured === "true" || featured === true,
 
       status: status || "Completed",
 
+      // SEO
       seoTitle: seoTitle || "",
+
       seoDescription: seoDescription || "",
 
+      // Display order
       order: Number(order) || 0,
 
+      // Images
       thumbnail: "",
+
       gallery: [],
-      features,
-      learnings,
-      challenges
     };
 
-    // Thumbnail Upload
+
+    // =========================
+    // THUMBNAIL UPLOAD
+    // =========================
+
     if (req.files?.thumbnail?.[0]) {
-      projectData.thumbnail = req.files.thumbnail[0].path;
+      projectData.thumbnail =
+        req.files.thumbnail[0].path;
     }
 
-    // Gallery Upload
+
+    // =========================
+    // GALLERY UPLOAD
+    // =========================
+
     if (req.files?.gallery?.length) {
-      projectData.gallery = req.files.gallery.map((file) => file.path);
+      projectData.gallery =
+        req.files.gallery.map(
+          (file) => file.path
+        );
     }
 
-    const project = await Project.create(projectData);
+
+    // =========================
+    // CREATE PROJECT
+    // =========================
+
+    const project =
+      await Project.create(projectData);
+
 
     return res.status(201).json({
       success: true,
-      message: "Project created successfully.",
+      message:
+        "Project created successfully.",
       project,
     });
 
   } catch (error) {
-    console.error(error);
+
+    console.error(
+      "Create Project Error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
