@@ -510,7 +510,7 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-4 shrink-0">
               <a
-                href="/resume/Gulzar-Hussain-Resume.pdf"
+                href="/Gulzar_Hussain.pdf"
                 target="_blank"
                 rel="noreferrer"
                 className="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 transition font-semibold shadow-lg shadow-violet-600/20"
@@ -519,7 +519,7 @@ export default function Home() {
               </a>
 
               <a
-                href="/resume/Gulzar-Hussain-Resume.pdf"
+                href="/Gulzar_Hussain.pdf"
                 download
                 className="px-6 py-3 rounded-xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] transition font-medium"
               >
