@@ -38,7 +38,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />}></Route>
         <Route path="/resources" element={<Resources />} />
-        <Route path="/resources/notes" element={<Notes />} />
+        {/* <Route path="/resources/notes" element={<Notes />} /> */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/skills" element={<AdminSkill />} />
