@@ -18,7 +18,6 @@ import BlogEdit from "./admin/edit/BlogEdit";
 import ProtectedRoute from "./pages/ProtectRoute";
 import NotFound from "./pages/NotFound";
 import Resources from "./resource/Resources";
-import Notes from "./resource/Notes";
 import ComingSoon from "./pages/ComingSoon";
 
 export default function App() {
