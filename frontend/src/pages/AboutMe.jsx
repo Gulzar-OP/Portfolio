@@ -21,8 +21,8 @@ const API =
 /* ---- your personal info: edit here ---- */
 const ABOUT = {
   name: "Gulzar",
-  location: "Katihar, Bihar",
-  focus: "MERN Stack Development, Artificial Intelligence , Machine Learning",
+  location: "Begusarai, Bihar",
+  focus: ["MERN Stack Development", "Artificial Intelligence", "Machine Learning"],
   paragraphs: [
     "I work with React, Node.js, Express and MongoDB to build full-stack applications. I enjoy turning ideas into polished digital products, especially portfolio websites, dashboards and business applications.",
     "I care about structure, performance and modern design. I like building reusable components, clean APIs and layouts that look good on every screen size.",
@@ -31,6 +31,8 @@ const ABOUT = {
     "Portfolio websites, admin dashboards, e-commerce systems, school management apps, and any project where UI matters as much as logic.",
 };
 
+/* Skill name -> brand icon. Add a line here when you add a new skill.
+   Keys are lowercase with everything except letters/digits removed. */
 const SKILL_ICONS = {
   html: "SiHtml5",
   html5: "SiHtml5",
@@ -223,7 +225,7 @@ export default function AboutMe() {
         {/* ---------- About + Skills ---------- */}
         <div className="mt-14 grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
           {/* left: sticky, so it never leaves a big empty gap beside the long skills list */}
-          <Reveal className="lg:sticky lg:top-20">
+          <Reveal className="lg:sticky lg:top-8">
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl sm:p-8">
               <h2 className="ab-display text-2xl font-bold">About {ABOUT.name}</h2>
               {ABOUT.paragraphs.map((p) => (
@@ -237,9 +239,18 @@ export default function AboutMe() {
                   <dt className="text-sm text-slate-500">Location</dt>
                   <dd className="text-right text-sm font-medium">{ABOUT.location}</dd>
                 </div>
-                <div className="flex items-baseline justify-between gap-4 py-3">
-                  <dt className="text-sm text-slate-500">Focus</dt>
-                  <dd className="text-right text-sm font-medium">{ABOUT.focus}</dd>
+                <div className="flex items-start justify-between gap-4 py-3">
+                  <dt className="pt-0.5 text-sm text-slate-500">Focus</dt>
+                  <dd className="flex flex-wrap justify-end gap-1.5">
+                    {(Array.isArray(ABOUT.focus) ? ABOUT.focus : [ABOUT.focus]).map((f) => (
+                      <span
+                        key={f}
+                        className="rounded-full border border-violet-400/20 bg-violet-500/10 px-2.5 py-1 text-xs font-medium text-violet-200"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </dd>
                 </div>
               </dl>
 
