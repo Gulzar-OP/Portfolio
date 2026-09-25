@@ -15,7 +15,7 @@ const router = express.Router();
 router.post("/", upload.single("image"), createBlog);
 
 router.get("/", getAllBlogs);
-router.get("/slug/:slug", getBlogBySlug);
+router.get("/:slug", getBlogBySlug);
 router.get("/:id", getBlogById);
 
 router.put("/:id",upload.single('thumbnail'), updateBlog);

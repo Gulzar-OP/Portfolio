@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Menu,
-  X,
-  Home,
-  User,
-  Briefcase,
-  Mail,
-  BookOpen,
-} from "lucide-react";
+import { Briefcase, BookOpen, Home, Mail, Menu, User, X } from "lucide-react";
+
+const NAV_LINKS = [
+  { name: "Home", path: "/", icon: Home },
+  { name: "About", path: "/about", icon: User },
+  { name: "Projects", path: "/projects", icon: Briefcase },
+  { name: "Resources", path: "/resources", icon: BookOpen },
+  { name: "Contact", path: "/contact", icon: Mail },
+];
+
+const FONT_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&display=swap');
+.nb-brand { font-family: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; letter-spacing: -0.02em; }
+`;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -22,6 +28,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* lock page scroll only while the mobile menu is open — the menu itself
+     is an overlay now, so it never pushes the page content down */
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -29,122 +37,135 @@ export default function Navbar() {
     };
   }, [open]);
 
-  const navLinks = [
-    { name: "Home", path: "/", icon: <Home size={18} /> },
-    { name: "About", path: "/about", icon: <User size={18} /> },
-    { name: "Projects", path: "/projects", icon: <Briefcase size={18} /> },
-    { name: "Resources", path: "/resources", icon: <BookOpen size={18} /> },
-    { name: "Contact", path: "/contact", icon: <Mail size={18} /> },
-  ];
+  /* close on Escape, and when the viewport grows into desktop size */
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    const onResize = () => window.innerWidth >= 768 && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open]);
 
-  const linkClass = ({ isActive }) =>
-    `relative flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ${
-      isActive
-        ? "text-white"
-        : "text-gray-300 hover:text-white hover:bg-white/10"
+  const desktopLinkClass = ({ isActive }) =>
+    `relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 ${
+      isActive ? "text-white" : "text-slate-400 hover:text-white hover:bg-white/10"
     }`;
 
   const mobileLinkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-colors duration-300 ${
+    `flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium transition-colors duration-300 ${
       isActive
-        ? "bg-gradient-to-r from-violet-500 to-blue-500 text-white shadow-lg shadow-violet-500/25"
-        : "text-gray-300 hover:text-white hover:bg-white/10"
+        ? "bg-violet-600 text-white shadow-lg shadow-violet-600/25"
+        : "text-slate-300 hover:bg-white/10 hover:text-white"
     }`;
 
   return (
-    <nav
-      className={`sticky top-0 z-[100] transition-all duration-300 ${
-        scrolled
-          ? " bg-slate-950/40 backdrop-blur-xl shadow-lg shadow-black/20"
-          : "border-transparent bg-slate-950/80 backdrop-blur-md"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-16 sm:h-[72px] flex items-center justify-between">
-          {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shadow-lg shadow-violet-500/30 ring-1 ring-white/10 group-hover:scale-105 group-hover:shadow-violet-500/50 transition-all duration-300">
-              <img
-                src="/logo.jpeg"
-                alt="Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="leading-tight">
-              <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                CodeBy<span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">Gulzar</span>
-              </p>
-              <p className="text-[11px] sm:text-xs text-gray-400">MERN Developer</p>
-            </div>
-          </NavLink>
+    <>
+      <style>{FONT_CSS}</style>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1 p-1 rounded-full bg-white/[0.03] border border-white/10">
-            {navLinks.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                end={item.path === "/"}
-                className={linkClass}
-              >
-                {({ isActive }) => (
-                  <>
-                    {isActive && (
-                      <motion.span
-                        layoutId="active-pill"
-                        className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-blue-500 shadow-lg shadow-violet-500/30 -z-10"
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    {item.icon}
-                    {item.name}
-                  </>
-                )}
-              </NavLink>
-            ))}
+      <nav
+        className={`sticky top-0 z-[100] transition-all duration-300 ${
+          scrolled
+            ? "border-b border-white/10 bg-[#07070d]/70 shadow-lg shadow-black/20 backdrop-blur-xl"
+            : "border-b border-transparent bg-[#07070d]/90 backdrop-blur-md"
+        }`}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between sm:h-[72px]">
+            {/* Logo */}
+            <NavLink to="/" onClick={() => setOpen(false)} className="group flex shrink-0 items-center gap-3">
+              <div className="h-10 w-10 overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-500/30 ring-1 ring-white/10 transition duration-300 group-hover:scale-105 sm:h-11 sm:w-11">
+                <img src="/logo.jpeg" alt="Logo" className="h-full w-full object-cover" />
+              </div>
+              <div className="leading-tight">
+                <p className="nb-brand text-base font-bold text-white sm:text-lg">
+                  CodeBy<span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Gulzar</span>
+                </p>
+                <p className="text-[11px] text-slate-500 sm:text-xs">MERN Developer</p>
+              </div>
+            </NavLink>
+
+            {/* Desktop nav */}
+            <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] p-1 md:flex">
+              {NAV_LINKS.map(({ name, path, icon: Icon }) => (
+                <NavLink key={name} to={path} end={path === "/"} className={desktopLinkClass}>
+                  {({ isActive }) => (
+                    <>
+                      {isActive && (
+                        <motion.span
+                          layoutId="active-pill"
+                          className="absolute inset-0 -z-10 rounded-full bg-violet-600 shadow-lg shadow-violet-600/30"
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <Icon size={16} />
+                      {name}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+
+            {/* Mobile toggle */}
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white transition active:scale-95 hover:bg-white/15 md:hidden"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+            >
+              {open ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
-
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setOpen((prev) => !prev)}
-            className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-white/10 text-white border border-white/10 hover:bg-white/15 active:scale-95 transition"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
+        {/* Mobile menu — position: absolute, so it overlays the page instead
+            of pushing content down when it opens */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              id="mobile-menu"
+              ref={panelRef}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute inset-x-0 top-full border-b border-white/10 bg-[#07070d]/95 backdrop-blur-xl md:hidden"
+            >
+              <div className="mx-auto max-w-7xl px-4 pb-4 pt-3 sm:px-6 lg:px-8">
+                <div className="space-y-1.5 rounded-3xl border border-white/10 bg-white/[0.04] p-3">
+                  {NAV_LINKS.map(({ name, path, icon: Icon }) => (
+                    <NavLink key={name} to={path} end={path === "/"} onClick={() => setOpen(false)} className={mobileLinkClass}>
+                      <Icon size={18} />
+                      {name}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* dimmed backdrop behind the overlay menu — click to close */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden border-t border-white/10"
-          >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 pt-3">
-              <div className="p-3 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl space-y-1.5">
-                {navLinks.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    end={item.path === "/"}
-                    onClick={() => setOpen(false)}
-                    className={mobileLinkClass}
-                  >
-                    {item.icon}
-                    {item.name}
-                  </NavLink>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+          <motion.button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm md:hidden"
+          />
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

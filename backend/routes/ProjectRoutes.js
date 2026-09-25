@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.get("/", getAllProjects);
 
-router.get("/slug/:slug", getProjectBySlug);
+router.get("/:slug", getProjectBySlug);
 
 router.get("/:id", getProjectById);
 
