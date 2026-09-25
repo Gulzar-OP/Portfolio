@@ -1,32 +1,78 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 import {
+  FaCheckCircle,
   FaEnvelope,
-  FaPhoneAlt,
+  FaExclamationTriangle,
   FaMapMarkerAlt,
   FaPaperPlane,
+  FaPhoneAlt,
   FaWhatsapp,
 } from "react-icons/fa";
-const API = import.meta.env.VITE_API || "http://localhost:2000"
-export default function Contact() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-    phone: "",
-  });
 
+const API =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API ||
+  "http://localhost:2000";
+
+/* ---- edit your real details here ---- */
+const CONTACT = {
+  email: "gulzarhu80@gmail.com",
+  phone: "+91XXXXXXXXXX", // TODO: replace with your real number
+  whatsapp: "", // e.g. "https://wa.me/91XXXXXXXXXX" — leave empty to hide the button
+  location: "Nasirganj, Barsoi, Katihar, Bihar, India",
+};
+
+const EMPTY_FORM = { name: "", email: "", subject: "", message: "", phone: "" };
+const MESSAGE_MAX = 1000;
+
+const FONT_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap');
+.ct-root { font-family: 'Inter', system-ui, sans-serif; }
+.ct-display { font-family: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; letter-spacing: -0.03em; }
+`;
+
+function Reveal({ children, className = "", delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.55, delay, ease: [0.2, 0.7, 0.2, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const inputClass =
+  "w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/30";
+
+function Field({ label, ...props }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium text-slate-500">{label}</span>
+      <input className={inputClass} {...props} />
+    </label>
+  );
+}
+
+export default function Contact() {
+  const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+
     setLoading(true);
     setSuccess("");
     setError("");
@@ -34,162 +80,158 @@ export default function Contact() {
     try {
       const res = await axios.post(`${API}/api/v1/contact`, form);
       setSuccess(res.data?.message || "Message sent successfully.");
-      setForm({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-        phone: "",
-      });
+      setForm(EMPTY_FORM);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Something went wrong. Please try again."
-      );
+      setError(err.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const infoItems = [
+    { icon: FaEnvelope, label: "Email", value: CONTACT.email, href: `mailto:${CONTACT.email}`, accent: "text-violet-400 bg-violet-500/10" },
+    { icon: FaPhoneAlt, label: "Phone", value: CONTACT.phone, href: `tel:${CONTACT.phone.replace(/[^+\d]/g, "")}`, accent: "text-emerald-400 bg-emerald-500/10" },
+    { icon: FaMapMarkerAlt, label: "Location", value: CONTACT.location, href: null, accent: "text-pink-400 bg-pink-500/10" },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#07070a] text-white">
+    <div className="ct-root relative min-h-screen overflow-x-clip bg-[#07070d] text-white">
+      <style>{FONT_CSS}</style>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-violet-600/20 blur-[140px]"
+      />
 
-      <main className="flex-1">
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <p className="text-blue-400 uppercase tracking-[0.3em] text-sm font-semibold mb-4">
-              Contact Me
-            </p>
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              Let’s Build Something Great
-            </h1>
-            <p className="mt-6 text-gray-300 text-base md:text-lg leading-8">
-              If you have a project, idea, or collaboration in mind, send me a
-              message and I’ll get back to you soon.
-            </p>
-          </div>
+      <main className="relative mx-auto max-w-7xl px-4 pb-24 pt-14 sm:px-6 sm:pt-20 lg:px-8">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <p className="text-sm font-medium text-violet-400">Contact me</p>
+          <h1 className="ct-display mt-3 text-5xl font-extrabold leading-[1.02] sm:text-6xl lg:text-7xl">
+            Let&apos;s build something great
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-slate-400 sm:text-lg">
+            If you have a project, an idea or a collaboration in mind, send me a message
+            and I&apos;ll get back to you soon.
+          </p>
+        </Reveal>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            <div className="rounded-3xl bg-white/5 border border-white/10 p-8 shadow-xl">
-              <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+        <div className="mt-14 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10">
+          {/* ---------- left: contact info ---------- */}
+          <Reveal className="space-y-5">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl sm:p-8">
+              <h2 className="ct-display text-2xl font-bold">Contact information</h2>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400">
-                    <FaEnvelope />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Email</p>
-                    <p className="font-medium">gulzarhu80@gmail.com</p>
-                  </div>
-                </div>
+              <div className="mt-6 space-y-3">
+                {infoItems.map(({ icon: Icon, label, value, href, accent }) => {
+                  const content = (
+                    <>
+                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${accent}`}>
+                        <Icon />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs text-slate-500">{label}</p>
+                        <p className="truncate font-medium text-slate-100">{value}</p>
+                      </div>
+                    </>
+                  );
+                  const rowClass =
+                    "flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 transition";
 
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-green-600/20 flex items-center justify-center text-green-400">
-                    <FaPhoneAlt />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Phone</p>
-                    <p className="font-medium">+91XXXXXXXXXX</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <div className="w-12 h-12 rounded-full bg-pink-600/20 flex items-center justify-center text-pink-400">
-                    <FaMapMarkerAlt />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Location</p>
-                    <p className="font-medium">Nasirganj, Barsoi, Katihar, Bihar, India</p>
-                  </div>
-                </div>
+                  return href ? (
+                    <a key={label} href={href} className={`${rowClass} hover:border-violet-400/40 hover:bg-white/[0.05]`}>
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={label} className={rowClass}>
+                      {content}
+                    </div>
+                  );
+                })}
               </div>
+
+              {CONTACT.whatsapp && (
+                <a
+                  href={CONTACT.whatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
+                >
+                  <FaWhatsapp size={16} />
+                  Chat on WhatsApp
+                </a>
+              )}
             </div>
 
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-sm leading-6 text-slate-400">
+              I usually reply within a day. For urgent queries, email is the fastest way to reach me.
+            </div>
+          </Reveal>
+
+          {/* ---------- right: form ---------- */}
+          <Reveal delay={0.08}>
             <form
               onSubmit={handleSubmit}
-              className="rounded-3xl bg-white/5 border border-white/10 p-8 shadow-xl"
+              className="rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl sm:p-8"
             >
-              <h2 className="text-2xl font-bold mb-6">Send a Message</h2>
+              <h2 className="ct-display text-2xl font-bold">Send a message</h2>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your Name"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/70 border border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="Your Email"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/70 border border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
-                />
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <Field label="Name" type="text" name="name" value={form.name} onChange={handleChange} placeholder="Your name" required maxLength={80} />
+                <Field label="Email" type="email" name="email" value={form.email} onChange={handleChange} placeholder="you@example.com" required maxLength={120} />
               </div>
 
               <div className="mt-4">
-                <input
-                  type="text"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="Phone Number"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/70 border border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
-                />
+                <Field label="Phone (optional)" type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 XXXXX XXXXX" maxLength={20} />
               </div>
 
               <div className="mt-4">
-                <input
-                  type="text"
-                  name="subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  placeholder="Subject"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/70 border border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
-                />
+                <Field label="Subject" type="text" name="subject" value={form.subject} onChange={handleChange} placeholder="What's this about?" required maxLength={120} />
               </div>
 
               <div className="mt-4">
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder="Write your message here..."
-                  rows="6"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/70 border border-white/10 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 resize-none"
-                />
+                <label className="block">
+                  <span className="mb-1.5 flex items-baseline justify-between text-xs font-medium text-slate-500">
+                    Message
+                    <span className="tabular-nums text-slate-600">{form.message.length}/{MESSAGE_MAX}</span>
+                  </span>
+                  <textarea
+                    name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    placeholder="Write your message here..."
+                    rows={6}
+                    required
+                    maxLength={MESSAGE_MAX}
+                    className={`${inputClass} resize-none`}
+                  />
+                </label>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition font-medium"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 py-3 font-semibold shadow-lg shadow-violet-600/25 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <FaPaperPlane />
-                {loading ? "Sending..." : "Send Message"}
+                <FaPaperPlane size={14} />
+                {loading ? "Sending…" : "Send message"}
               </button>
 
-              {success && (
-                <p className="mt-4 text-green-400 bg-green-900/20 p-3 rounded-xl text-sm">
-                  {success}
-                </p>
-              )}
-
-              {error && (
-                <p className="mt-4 text-red-400 bg-red-900/20 p-3 rounded-xl text-sm">
-                  {error}
-                </p>
-              )}
+              <div aria-live="polite" className="mt-4 space-y-3">
+                {success && (
+                  <p className="flex items-start gap-2 rounded-xl bg-emerald-900/20 p-3 text-sm text-emerald-300">
+                    <FaCheckCircle className="mt-0.5 shrink-0" />
+                    {success}
+                  </p>
+                )}
+                {error && (
+                  <p className="flex items-start gap-2 rounded-xl bg-red-900/20 p-3 text-sm text-red-300">
+                    <FaExclamationTriangle className="mt-0.5 shrink-0" />
+                    {error}
+                  </p>
+                )}
+              </div>
             </form>
-          </div>
-        </section>
+          </Reveal>
+        </div>
       </main>
     </div>
   );
