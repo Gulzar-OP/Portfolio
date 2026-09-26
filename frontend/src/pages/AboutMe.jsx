@@ -12,16 +12,16 @@ import {
   FaServer,
 } from "react-icons/fa";
 import * as Si from "react-icons/si";
+import { Link } from "react-router-dom";
 
 const API =
   import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_API ||
   "http://localhost:2000";
 
-/* ---- your personal info: edit here ---- */
 const ABOUT = {
   name: "Gulzar",
-  location: "Begusarai, Bihar",
+  location: "Katihar, Bihar",
   focus: ["MERN Stack Development", "Artificial Intelligence", "Machine Learning"],
   paragraphs: [
     "I work with React, Node.js, Express and MongoDB to build full-stack applications. I enjoy turning ideas into polished digital products, especially portfolio websites, dashboards and business applications.",
@@ -31,8 +31,6 @@ const ABOUT = {
     "Portfolio websites, admin dashboards, e-commerce systems, school management apps, and any project where UI matters as much as logic.",
 };
 
-/* Skill name -> brand icon. Add a line here when you add a new skill.
-   Keys are lowercase with everything except letters/digits removed. */
 const SKILL_ICONS = {
   html: "SiHtml5",
   html5: "SiHtml5",
@@ -224,7 +222,6 @@ export default function AboutMe() {
 
         {/* ---------- About + Skills ---------- */}
         <div className="mt-14 grid items-start gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
-          {/* left: sticky, so it never leaves a big empty gap beside the long skills list */}
           <Reveal className="lg:sticky lg:top-8">
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl sm:p-8">
               <h2 className="ab-display text-2xl font-bold">About {ABOUT.name}</h2>
@@ -302,7 +299,7 @@ export default function AboutMe() {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {education.map((edu, i) => (
-                <Reveal key={edu._id || edu.degree} delay={i * 0.07} className="h-full">
+                <Link to={`/education/${edu._id}`} key={edu._id || edu.degree} delay={i * 0.07} className="h-full">
                   <article className="flex h-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-violet-400/40">
                     <span
                       className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-xs ${
@@ -348,7 +345,7 @@ export default function AboutMe() {
                       </a>
                     )}
                   </article>
-                </Reveal>
+                </Link>
               ))}
             </div>
           </section>

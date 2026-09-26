@@ -9,16 +9,12 @@ import Contact from "./pages/Contact";
 import ProjectDetails from "./pages/project/ProjectDetails";
 import AboutMe from "./pages/AboutMe";
 import BlogDetails from "./pages/BlogDetails";
-import Dashboard from "./admin/Dashboard";
-import AdminSkill from "./admin/AdminSkill";
 import CertificateDetails from "./pages/CertificateDetails";
-import Login from "./pages/Login";
-import ProjectEdit from "./admin/edit/ProjectEdit";
-import BlogEdit from "./admin/edit/BlogEdit";
-import ProtectedRoute from "./pages/ProtectRoute";
 import NotFound from "./pages/NotFound";
 import Resources from "./resource/Resources";
 import ComingSoon from "./pages/ComingSoon";
+import Education from "./pages/Education";
+import EducationDetails from "./pages/EducationDetails";
 
 export default function App() {
   return (
@@ -34,22 +30,10 @@ export default function App() {
         <Route path="/about" element={<AboutMe />} />
         <Route path="/resources/blogs/:slug" element={<BlogDetails />} />
         <Route path="/certificates/:id" element={<CertificateDetails />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />}></Route>
         <Route path="/resources" element={<Resources />} />
-        {/* <Route path="/resources/notes" element={<Notes />} /> */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/skills" element={<AdminSkill />} />
-          <Route
-            path="/dashboard/projects/:projectId/edit"
-            element={<ProjectEdit />}
-          />
-          <Route
-            path="/dashboard/blogs/:id/edit"
-            element={<BlogEdit />}
-          />
-        </Route>
+        <Route path="/education" element={<Education />} />
+        <Route path="/education/:id" element={<EducationDetails />} />
       </Routes>
       <Footer />
     </>

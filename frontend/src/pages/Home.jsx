@@ -20,9 +20,9 @@ import ChatBot from "../components/ChatBot";
 
 /* TODO: put your real profile links here (or return them from your profile API) */
 const SOCIALS = {
-  github: "https://github.com/",
-  linkedin: "https://linkedin.com/",
-  instagram: "https://instagram.com/",
+  github: "https://github.com/Gulzar-OP",
+  linkedin: "https://www.linkedin.com/in/gulzar-hussain-283285329/",
+  instagram: "https://www.instagram.com/gulz.ar120/",
 };
 
 const API =
@@ -163,7 +163,6 @@ export default function Home() {
     };
   }, [showImage]);
 
-  /* real numbers from your own data instead of hard-coded "20+ happy clients" */
   const stats = useMemo(
     () =>
       [

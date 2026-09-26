@@ -4,21 +4,30 @@ import { useParams, Link } from "react-router-dom";
 import {
   FaArrowLeft,
   FaArrowRight,
-  FaRegCalendarAlt,
-  FaRegClock,
-  FaRegEye,
-  FaTwitter,
-  FaLinkedin,
+  FaCheck,
   FaFacebookF,
-  FaLink,
   FaGithub,
   FaGlobe,
-  FaRegCopy,
-  FaCheck,
+  FaLink,
+  FaLinkedin,
   FaQuoteLeft,
+  FaRegCalendarAlt,
+  FaRegClock,
+  FaRegCopy,
+  FaRegEye,
+  FaTwitter,
 } from "react-icons/fa";
 
-const API = import.meta.env.VITE_API || "http://localhost:2000"
+const API =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API ||
+  "http://localhost:2000";
+
+const FONT_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap');
+.bd-root { font-family: 'Inter', system-ui, sans-serif; }
+.bd-display { font-family: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; letter-spacing: -0.03em; }
+`;
 
 /* ---------- helpers ---------- */
 
@@ -88,6 +97,14 @@ function slugify(text) {
     .replace(/\s+/g, "-");
 }
 
+/* resolve an avatar/thumbnail path whether the API already returns a full
+   URL or just a filename that needs the API host prefixed */
+function resolveMedia(path) {
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path) || path.startsWith("/")) return path;
+  return `${API}/${path}`;
+}
+
 function CodeBlock({ lang, code }) {
   const [copied, setCopied] = useState(false);
 
@@ -96,27 +113,45 @@ function CodeBlock({ lang, code }) {
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch (e) {
+    } catch {
       /* clipboard blocked, ignore */
     }
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-white/10 bg-white/[0.03] my-6">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-white/[0.02]">
-        <span className="text-xs font-mono text-gray-400">{lang}</span>
+    <div className="my-6 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.02] px-4 py-2.5">
+        <span className="font-mono text-xs text-gray-400">{lang}</span>
         <button
+          type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-violet-300 transition"
+          className="inline-flex items-center gap-1.5 text-xs text-gray-400 transition hover:text-violet-300"
         >
           {copied ? <FaCheck size={11} className="text-emerald-400" /> : <FaRegCopy size={11} />}
           {copied ? "Copied" : "Copy"}
         </button>
       </div>
-      <pre className="px-5 py-4 overflow-x-auto text-[13px] leading-6">
+      <pre className="overflow-x-auto px-5 py-4 text-[13px] leading-6">
         <code className="font-mono text-gray-200">{code}</code>
       </pre>
     </div>
+  );
+}
+
+/* an icon-only social link that hides itself when there's no real URL,
+   instead of rendering a dead href="#" */
+function SocialIcon({ href, icon: Icon, label, size = 15 }) {
+  if (!href) return null;
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-400 transition hover:border-violet-500/40 hover:bg-violet-600/20 hover:text-violet-300"
+    >
+      <Icon size={size} />
+    </a>
   );
 }
 
@@ -142,8 +177,7 @@ export default function BlogDetails() {
           setError("");
         }
       } catch (err) {
-        console.error(err);
-        if (!ignore) setError("Blog not found.");
+        if (!ignore) setError(err.response?.data?.message || "Blog not found.");
       } finally {
         if (!ignore) setLoading(false);
       }
@@ -181,7 +215,7 @@ export default function BlogDetails() {
       await navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 1500);
-    } catch (e) {
+    } catch {
       /* ignore */
     }
   };
@@ -190,19 +224,20 @@ export default function BlogDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#07070a] text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
+      <div className="bd-root min-h-screen bg-[#07070d] text-white">
+        <style>{FONT_CSS}</style>
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_320px]">
           <div className="animate-pulse space-y-6">
-            <div className="h-4 w-24 bg-white/5 rounded" />
-            <div className="h-9 w-2/3 bg-white/5 rounded" />
-            <div className="h-4 w-1/3 bg-white/5 rounded" />
-            <div className="h-80 bg-white/5 rounded-2xl" />
-            <div className="h-4 bg-white/5 rounded w-full" />
-            <div className="h-4 bg-white/5 rounded w-5/6" />
+            <div className="h-4 w-24 rounded bg-white/5" />
+            <div className="h-9 w-2/3 rounded bg-white/5" />
+            <div className="h-4 w-1/3 rounded bg-white/5" />
+            <div className="h-80 rounded-2xl bg-white/5" />
+            <div className="h-4 w-full rounded bg-white/5" />
+            <div className="h-4 w-5/6 rounded bg-white/5" />
           </div>
-          <div className="hidden lg:block animate-pulse space-y-6">
-            <div className="h-40 bg-white/5 rounded-2xl" />
-            <div className="h-52 bg-white/5 rounded-2xl" />
+          <div className="hidden animate-pulse space-y-6 lg:block">
+            <div className="h-40 rounded-2xl bg-white/5" />
+            <div className="h-52 rounded-2xl bg-white/5" />
           </div>
         </div>
       </div>
@@ -211,13 +246,15 @@ export default function BlogDetails() {
 
   if (error || !blog) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#07070a] text-white">
+      <div className="bd-root flex min-h-screen flex-col items-center justify-center bg-[#07070d] text-white">
+        <style>{FONT_CSS}</style>
         <h1 className="text-2xl font-bold">{error || "Blog not found."}</h1>
         <Link
-          to="/blogs"
-          className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 transition text-sm font-semibold"
+          to="/resources/blogs"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 text-sm font-semibold transition hover:bg-violet-500"
         >
-          Back to Blogs
+          <FaArrowLeft size={12} />
+          Back to blogs
         </Link>
       </div>
     );
@@ -226,34 +263,42 @@ export default function BlogDetails() {
   const author = blog.author || {};
   const authorName = typeof author === "string" ? author : author.name || "Admin";
   const authorRole = author.role || "Full Stack Developer";
-  const authorAvatar = author.avatar ? `${URI}/${author.avatar}` : null;
+  const authorAvatar = resolveMedia(author.avatar);
   const authorBio =
-    author.bio || "Passionate full-stack developer who loves building scalable web applications and sharing knowledge.";
+    author.bio ||
+    "Passionate full-stack developer who loves building scalable web applications and sharing knowledge.";
+  const authorSocials = author.socials || {};
 
   const readTime = blog.readTime || Math.max(1, Math.round((blog.content?.split(" ").length || 400) / 200));
   const views = blog.views ?? null;
   const category = blog.category || (blog.tags && blog.tags[0]) || "Web Development";
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <div className="min-h-screen bg-[#07070a] text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14">
-        {/* Breadcrumb */}
+    <div className="bd-root relative min-h-screen overflow-x-clip bg-[#07070d] text-white">
+      <style>{FONT_CSS}</style>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-violet-600/20 blur-[140px]"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 md:py-14">
         <Link
-          to="/blogs"
-          className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-300 transition text-sm font-medium mb-6"
+          to="/resources/blogs"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-violet-400 transition hover:text-violet-300"
         >
           <FaArrowLeft size={12} />
-          Back to Blogs
+          Back to blogs
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_320px]">
           {/* ---------------- Main column ---------------- */}
-          <div>
-            <span className="inline-block px-3 py-1 rounded-lg bg-violet-600/20 border border-violet-500/30 text-violet-300 text-xs font-semibold mb-4">
+          <div className="min-w-0">
+            <span className="mb-4 inline-block rounded-lg border border-violet-500/30 bg-violet-600/20 px-3 py-1 text-xs font-semibold text-violet-300">
               {category}
             </span>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 mb-4">
+            <div className="mb-4 flex flex-wrap items-center gap-4 text-xs text-gray-500">
               {blog.createdAt && (
                 <span className="inline-flex items-center gap-1.5">
                   <FaRegCalendarAlt size={11} />
@@ -276,24 +321,24 @@ export default function BlogDetails() {
               )}
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight">
+            <h1 className="bd-display break-words text-3xl font-extrabold leading-tight md:text-5xl">
               {blog.title}
             </h1>
 
             {blog.description && (
-              <p className="mt-5 text-lg text-gray-400 leading-8">{blog.description}</p>
+              <p className="mt-5 text-lg leading-8 text-gray-400">{blog.description}</p>
             )}
 
-            <div className="flex items-center justify-between mt-7 pb-7 border-b border-white/10">
+            <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-7">
               <div className="flex items-center gap-3">
                 {authorAvatar ? (
                   <img
                     src={authorAvatar}
                     alt={authorName}
-                    className="w-10 h-10 rounded-full object-cover border border-white/10"
+                    className="h-10 w-10 rounded-full border border-white/10 object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-violet-600/30 border border-violet-500/30 flex items-center justify-center text-sm font-semibold text-violet-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-violet-500/30 bg-violet-600/30 text-sm font-semibold text-violet-300">
                     {authorName.charAt(0)}
                   </div>
                 )}
@@ -304,32 +349,32 @@ export default function BlogDetails() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 hidden sm:inline mr-1">Share:</span>
-                <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                    typeof window !== "undefined" ? window.location.href : ""
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-violet-600/30 border border-white/10 flex items-center justify-center transition"
-                >
-                  <FaTwitter size={13} />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-violet-600/30 border border-white/10 flex items-center justify-center transition"
-                >
-                  <FaLinkedin size={13} />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-violet-600/30 border border-white/10 flex items-center justify-center transition"
-                >
-                  <FaFacebookF size={13} />
-                </a>
+                <span className="mr-1 hidden text-xs text-gray-500 sm:inline">Share:</span>
+                <SocialIcon
+                  href={shareUrl && `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`}
+                  icon={FaTwitter}
+                  label="Share on Twitter"
+                  size={13}
+                />
+                <SocialIcon
+                  href={
+                    shareUrl && `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+                  }
+                  icon={FaLinkedin}
+                  label="Share on LinkedIn"
+                  size={13}
+                />
+                <SocialIcon
+                  href={shareUrl && `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+                  icon={FaFacebookF}
+                  label="Share on Facebook"
+                  size={13}
+                />
                 <button
+                  type="button"
                   onClick={handleCopyLink}
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-violet-600/30 border border-white/10 flex items-center justify-center transition"
+                  aria-label="Copy link"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-violet-600/30"
                 >
                   {copiedLink ? <FaCheck size={12} className="text-emerald-400" /> : <FaLink size={12} />}
                 </button>
@@ -337,11 +382,11 @@ export default function BlogDetails() {
             </div>
 
             {/* Cover image */}
-            <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02] mt-8">
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
               <img
-                src={blog.thumbnail}
+                src={blog.thumbnail || "/bg.png"}
                 alt={blog.title}
-                className="w-full h-72 md:h-96 object-cover group-hover:scale-110"
+                className="h-72 w-full object-cover md:h-96"
               />
             </div>
 
@@ -358,7 +403,7 @@ export default function BlogDetails() {
                     <h2
                       key={i}
                       id={slugify(s.text)}
-                      className="text-2xl md:text-3xl font-bold text-white mt-12 mb-4 scroll-mt-28"
+                      className="mb-4 mt-12 scroll-mt-28 text-2xl font-bold text-white md:text-3xl"
                     >
                       {s.text}
                     </h2>
@@ -371,10 +416,10 @@ export default function BlogDetails() {
                   return (
                     <blockquote
                       key={i}
-                      className="flex gap-4 my-8 px-6 py-5 rounded-xl bg-violet-600/[0.07] border border-violet-500/20"
+                      className="my-8 flex gap-4 rounded-xl border border-violet-500/20 bg-violet-600/[0.07] px-6 py-5"
                     >
-                      <FaQuoteLeft className="text-violet-400 shrink-0 mt-1" size={20} />
-                      <p className="text-lg text-gray-200 italic leading-8">{s.text}</p>
+                      <FaQuoteLeft className="mt-1 shrink-0 text-violet-400" size={20} />
+                      <p className="text-lg italic leading-8 text-gray-200">{s.text}</p>
                     </blockquote>
                   );
                 }
@@ -388,11 +433,11 @@ export default function BlogDetails() {
 
             {/* Tags (mobile / inline) */}
             {blog.tags?.length > 0 && (
-              <div className="flex gap-2 mt-10 flex-wrap">
-                {blog.tags.map((tag, index) => (
+              <div className="mt-10 flex flex-wrap gap-2">
+                {blog.tags.map((tag) => (
                   <span
-                    key={index}
-                    className="px-3.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-violet-300 font-medium"
+                    key={tag}
+                    className="rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-violet-300"
                   >
                     #{tag}
                   </span>
@@ -402,16 +447,16 @@ export default function BlogDetails() {
 
             {/* Prev / Next */}
             {(blog.prevPost || blog.nextPost) && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
+              <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {blog.prevPost ? (
                   <Link
-                    to={`/blogs/${blog.prevPost.slug}`}
-                    className="group flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-violet-500/40 transition"
+                    to={`/resources/blogs/${blog.prevPost.slug}`}
+                    className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition hover:border-violet-500/40"
                   >
-                    <FaArrowLeft className="text-violet-400 shrink-0" size={14} />
+                    <FaArrowLeft className="shrink-0 text-violet-400" size={14} />
                     <div className="min-w-0">
-                      <p className="text-xs text-gray-500">Previous Post</p>
-                      <p className="text-sm font-semibold truncate group-hover:text-violet-300 transition">
+                      <p className="text-xs text-gray-500">Previous post</p>
+                      <p className="truncate text-sm font-semibold transition group-hover:text-violet-300">
                         {blog.prevPost.title}
                       </p>
                     </div>
@@ -421,16 +466,16 @@ export default function BlogDetails() {
                 )}
                 {blog.nextPost && (
                   <Link
-                    to={`/blogs/${blog.nextPost.slug}`}
-                    className="group flex items-center gap-3 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-violet-500/40 transition text-right sm:justify-end"
+                    to={`/resources/blogs/${blog.nextPost.slug}`}
+                    className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-right transition hover:border-violet-500/40 sm:justify-end"
                   >
                     <div className="min-w-0">
-                      <p className="text-xs text-gray-500">Next Post</p>
-                      <p className="text-sm font-semibold truncate group-hover:text-violet-300 transition">
+                      <p className="text-xs text-gray-500">Next post</p>
+                      <p className="truncate text-sm font-semibold transition group-hover:text-violet-300">
                         {blog.nextPost.title}
                       </p>
                     </div>
-                    <FaArrowRight className="text-violet-400 shrink-0" size={14} />
+                    <FaArrowRight className="shrink-0 text-violet-400" size={14} />
                   </Link>
                 )}
               </div>
@@ -438,19 +483,19 @@ export default function BlogDetails() {
           </div>
 
           {/* ---------------- Sidebar ---------------- */}
-          <aside className="space-y-6 lg:sticky lg:top-24 h-fit">
+          <aside className="h-fit space-y-6 lg:sticky lg:top-24">
             {/* About the author */}
-            <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
-              <p className="text-sm font-semibold text-gray-400 mb-4">About the Author</p>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+              <p className="mb-4 text-sm font-semibold text-gray-400">About the author</p>
               <div className="flex items-center gap-3">
                 {authorAvatar ? (
                   <img
                     src={authorAvatar}
                     alt={authorName}
-                    className="w-12 h-12 rounded-full object-cover border border-white/10"
+                    className="h-12 w-12 rounded-full border border-white/10 object-cover"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-violet-600/30 border border-violet-500/30 flex items-center justify-center text-base font-semibold text-violet-300">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-violet-500/30 bg-violet-600/30 text-base font-semibold text-violet-300">
                     {authorName.charAt(0)}
                   </div>
                 )}
@@ -459,36 +504,29 @@ export default function BlogDetails() {
                   <p className="text-xs text-violet-400">{authorRole}</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-400 mt-4 leading-6">{authorBio}</p>
-              <div className="flex items-center gap-3 mt-4">
-                <a href="#" className="text-gray-500 hover:text-violet-300 transition">
-                  <FaGithub size={15} />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-violet-300 transition">
-                  <FaLinkedin size={15} />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-violet-300 transition">
-                  <FaTwitter size={15} />
-                </a>
-                <a href="#" className="text-gray-500 hover:text-violet-300 transition">
-                  <FaGlobe size={15} />
-                </a>
+              <p className="mt-4 text-sm leading-6 text-gray-400">{authorBio}</p>
+
+              <div className="mt-4 flex items-center gap-3">
+                <SocialIcon href={authorSocials.github} icon={FaGithub} label="GitHub" />
+                <SocialIcon href={authorSocials.linkedin} icon={FaLinkedin} label="LinkedIn" />
+                <SocialIcon href={authorSocials.twitter} icon={FaTwitter} label="Twitter" />
+                <SocialIcon href={authorSocials.website} icon={FaGlobe} label="Website" />
               </div>
             </div>
 
             {/* Table of contents */}
             {toc.length > 0 && (
-              <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
-                <p className="text-sm font-semibold text-gray-400 mb-3">Table of Contents</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                <p className="mb-3 text-sm font-semibold text-gray-400">Table of contents</p>
                 <ul className="space-y-1">
                   {toc.map((item) => (
                     <li key={item.id}>
                       <a
                         href={`#${item.id}`}
-                        className={`block py-1.5 pl-3 text-sm border-l-2 transition ${
+                        className={`block border-l-2 py-1.5 pl-3 text-sm transition ${
                           activeHeading === item.id
-                            ? "border-violet-500 text-violet-300 font-medium"
-                            : "border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/30"
+                            ? "border-violet-500 font-medium text-violet-300"
+                            : "border-white/10 text-gray-400 hover:border-white/30 hover:text-gray-200"
                         }`}
                       >
                         {item.text}
@@ -501,33 +539,33 @@ export default function BlogDetails() {
 
             {/* Related posts */}
             {blog.relatedPosts?.length > 0 && (
-              <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
-                <p className="text-sm font-semibold text-gray-400 mb-4">Related Posts</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                <p className="mb-4 text-sm font-semibold text-gray-400">Related posts</p>
                 <div className="space-y-4">
-                  {blog.relatedPosts.map((post, i) => (
+                  {blog.relatedPosts.map((post) => (
                     <Link
-                      key={i}
-                      to={`/blogs/${post.slug}`}
-                      className="flex items-center gap-3 group"
+                      key={post._id || post.slug}
+                      to={`/resources/blogs/${post.slug}`}
+                      className="group flex items-center gap-3"
                     >
-                      <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gradient-to-br from-violet-600/40 to-fuchsia-600/20 flex items-center justify-center">
-                        {post.image ? (
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-violet-600/40 to-fuchsia-600/20">
+                        {post.thumbnail || post.image ? (
                           <img
-                            src={blog.thumbnail}
+                            src={post.thumbnail || post.image}
                             alt={post.title}
-                            className="w-full h-full object-cover"
+                            className="h-full w-full object-cover"
                           />
                         ) : (
-                          <span className="text-[10px] text-violet-200 font-bold">
+                          <span className="text-[10px] font-bold text-violet-200">
                             {post.title?.charAt(0)}
                           </span>
                         )}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium leading-5 truncate group-hover:text-violet-300 transition">
+                        <p className="truncate text-sm font-medium leading-5 transition group-hover:text-violet-300">
                           {post.title}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="mt-0.5 text-xs text-gray-500">
                           {post.createdAt &&
                             new Date(post.createdAt).toLocaleDateString("en-US", {
                               month: "short",
@@ -541,10 +579,10 @@ export default function BlogDetails() {
                   ))}
                 </div>
                 <Link
-                  to="/blogs"
-                  className="inline-flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition mt-4"
+                  to="/resources/blogs"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm text-violet-400 transition hover:text-violet-300"
                 >
-                  View All Posts
+                  View all posts
                   <FaArrowRight size={11} />
                 </Link>
               </div>
@@ -552,13 +590,13 @@ export default function BlogDetails() {
 
             {/* Tags */}
             {blog.tags?.length > 0 && (
-              <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
-                <p className="text-sm font-semibold text-gray-400 mb-3">Tags</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                <p className="mb-3 text-sm font-semibold text-gray-400">Tags</p>
                 <div className="flex flex-wrap gap-2">
-                  {blog.tags.map((tag, i) => (
+                  {blog.tags.map((tag) => (
                     <span
-                      key={i}
-                      className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-violet-300 font-medium"
+                      key={tag}
+                      className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-violet-300"
                     >
                       {tag}
                     </span>

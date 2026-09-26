@@ -2,9 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft, FaRocket } from "react-icons/fa";
 
+const FONT_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap');
+.cs-display { font-family: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif; letter-spacing: -0.03em; }
+`;
+
 export default function ComingSoon() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05060a] px-4 text-white">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07070d] px-4 text-white">
+      <style>{FONT_CSS}</style>
+
       {/* Background glow */}
       <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/20 blur-[120px]" />
 
@@ -19,9 +26,9 @@ export default function ComingSoon() {
           Stay Tuned
         </p>
 
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">
+        <h1 className="cs-display text-4xl font-extrabold tracking-tight sm:text-6xl">
           Coming
-          <span className="text-violet-500"> Soon</span>
+          <span className="text-violet-400"> Soon</span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-lg text-sm leading-7 text-gray-400 sm:text-base">
