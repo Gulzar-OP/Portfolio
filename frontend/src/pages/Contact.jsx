@@ -80,7 +80,7 @@ export default function Contact() {
     setError("");
 
     try {
-      const res = await axios.post(`${API}/api/v1/msg/send`, form);
+      const res = await axios.post(`${API}/api/v1/msg`, form);
       setSuccess(res.data?.message || "Message sent successfully.");
       setForm(EMPTY_FORM);
     } catch (err) {
