@@ -16,7 +16,7 @@ import ProfileRoutes from './routes/ProfileRoute.js'
 import SettingRooutes from './routes/SettingRoutes.js'
 import ProjectRoutes from './routes/ProjectRoutes.js'
 import chatRoutes from "./routes/chatRoutes.js";
-
+import msgRoute from "./routes/msgRoute.js"
 import connectionDB from './config/connectDB.js';
 const app = express()
 
@@ -53,6 +53,7 @@ app.use('/api/v1/profile',ProfileRoutes)
 app.use('/api/v1/settings',SettingRooutes)
 app.use('/api/v1/projects',ProjectRoutes)
 app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/msg", msgRoute);
 
 app.listen(PORT, () => {
   connectionDB();

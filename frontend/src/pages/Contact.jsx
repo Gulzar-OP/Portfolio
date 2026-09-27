@@ -16,11 +16,13 @@ const API =
   import.meta.env.VITE_API ||
   "http://localhost:2000";
 
-/* ---- edit your real details here ---- */
+const defaultMessage =
+  "Hello Gulzar, I visited your portfolio and would like to connect with you.";
+
 const CONTACT = {
-  email: "gulzarhu80@gmail.com",
-  phone: "+91XXXXXXXXXX", // TODO: replace with your real number
-  whatsapp: "", // e.g. "https://wa.me/91XXXXXXXXXX" — leave empty to hide the button
+  email: "gulzarhu88@gmail.com",
+  phone: "+91XXXXXXXXXX",
+  whatsapp: `https://wa.me/919661720780?text=${encodeURIComponent(defaultMessage)}`,
   location: "Nasirganj, Barsoi, Katihar, Bihar, India",
 };
 
@@ -78,7 +80,7 @@ export default function Contact() {
     setError("");
 
     try {
-      const res = await axios.post(`${API}/api/v1/contact`, form);
+      const res = await axios.post(`${API}/api/v1/msg/send`, form);
       setSuccess(res.data?.message || "Message sent successfully.");
       setForm(EMPTY_FORM);
     } catch (err) {
